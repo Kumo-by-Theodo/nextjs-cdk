@@ -1,0 +1,16 @@
+{
+  "name": "sls-cdk-nextjs",
+  "version": "0.0.1",
+  "description": "A CDK Construct for deploying a NextJS App",
+  "main": "index.js",
+  "license": "MIT",
+  "workspaces": [
+    "packages/deployment",
+    "packages/src",
+    "example-app"
+  ],
+  "private": true,
+  "devDependencies": {
+    "eslint": "^8.23.0"
+  }
+}

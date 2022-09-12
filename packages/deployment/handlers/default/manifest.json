@@ -1,0 +1,1 @@
+{"staticPages":{"^/(?:/)?$":"pages/index.html","^/index2(?:/)?$":"pages/index2.html"},"notFound":"pages/404.html"}
