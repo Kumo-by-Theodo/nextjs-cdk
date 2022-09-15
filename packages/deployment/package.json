@@ -14,11 +14,14 @@
     "@aws-sdk/client-cloudfront": "^3.168.0",
     "@aws-sdk/client-s3": "^3.168.0",
     "@types/aws-cloudfront-function": "^1.0.2",
+    "@types/aws-lambda": "^8.10.103",
+    "@types/cookie": "^0.5.1",
     "@types/jest": "^27.5.2",
     "@types/node": "^18.7.16",
     "@types/prettier": "2.6.0",
     "aws-cdk": "2.34.0",
     "jest": "^27.5.1",
+    "next": "^12.3.0",
     "ts-jest": "^27.1.4",
     "ts-node": "^10.9.1",
     "typescript": "~3.9.7"
@@ -26,6 +29,7 @@
   "dependencies": {
     "aws-cdk-lib": "2.34.0",
     "constructs": "^10.0.0",
+    "cookie": "^0.5.0",
     "source-map-support": "^0.5.21"
   }
 }

@@ -2,19 +2,15 @@ import { Duration, RemovalPolicy, Stack, StackProps } from "aws-cdk-lib";
 import {
   CachePolicy,
   Distribution,
-  Function,
-  FunctionCode,
   LambdaEdgeEventType,
-  OriginAccessIdentity,
 } from "aws-cdk-lib/aws-cloudfront";
 import { S3Origin } from "aws-cdk-lib/aws-cloudfront-origins";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import { RetentionDays } from "aws-cdk-lib/aws-logs";
 import { BlockPublicAccess, Bucket } from "aws-cdk-lib/aws-s3";
 import { BucketDeployment, Source } from "aws-cdk-lib/aws-s3-deployment";
-import { exec } from "child_process";
 import { Construct } from "constructs";
-import { writeFileSync } from "fs";
+import { existsSync, readdirSync, writeFileSync } from "fs";
 import { join } from "path";
 import { createDefaultHandlerManifest } from "../helpers/manifestBundler";
 
@@ -51,6 +47,11 @@ export class NextJSStack extends Stack {
     const longCachePolicy = new CachePolicy(this, "NextJSLongCachePolicy", {
       defaultTtl: Duration.days(30),
     });
+    const noCachePolicy = new CachePolicy(this, "NextJSNoCachePolicy", {
+      minTtl: Duration.days(0),
+      defaultTtl: Duration.days(0),
+      maxTtl: Duration.days(0),
+    });
 
     this.nextCloudfront = new Distribution(this, "NextJSDistribution", {
       enableLogging: true,
@@ -79,11 +80,33 @@ export class NextJSStack extends Stack {
         cachePolicy: longCachePolicy,
       }
     );
+    this.nextCloudfront.addBehavior(
+      "api/*",
+      new S3Origin(this.mainNextBucket),
+      {
+        cachePolicy: noCachePolicy,
+        edgeLambdas: [
+          {
+            eventType: LambdaEdgeEventType.ORIGIN_REQUEST,
+            functionVersion: this.defaultHandler.currentVersion,
+            includeBody: true,
+          },
+        ],
+      }
+    );
 
     new BucketDeployment(this, "NextJSAssetsDeployment", {
       destinationBucket: this.mainNextBucket,
       destinationKeyPrefix: "serverless",
       sources: [Source.asset(join(nextAppRoot, ".next/serverless"))],
+      distribution: this.nextCloudfront,
+      distributionPaths: ["/*"],
+    });
+
+    new BucketDeployment(this, "NextJSPublicDeployment", {
+      destinationBucket: this.mainNextBucket,
+      destinationKeyPrefix: "public",
+      sources: [Source.asset(join(nextAppRoot, "public"))],
       distribution: this.nextCloudfront,
       distributionPaths: ["/*"],
     });
@@ -108,10 +131,21 @@ export class NextJSStack extends Stack {
       this.nextAppRoot,
       ".next/routes-manifest.json"
     ));
+    const prerenderManisgest = require(join(
+      this.nextAppRoot,
+      ".next/prerender-manifest.json"
+    ));
+
+    const publicFolder = join(this.nextAppRoot, "public");
+    const publicFiles = existsSync(publicFolder)
+      ? this.listFiles(publicFolder)
+      : [];
 
     const runtimeManifest = createDefaultHandlerManifest(
       pagesManifest,
-      routesManifest
+      routesManifest,
+      prerenderManisgest,
+      publicFiles
     );
 
     writeFileSync(
@@ -123,5 +157,22 @@ export class NextJSStack extends Stack {
       entry: join(defaultHandlerFolder, "index.ts"),
       logRetention: RetentionDays.ONE_DAY,
     });
+  }
+
+  private listFiles(folder: string, prefix = "/"): string[] {
+    return readdirSync(folder, { withFileTypes: true }).reduce(
+      (buffer, fileOrFolder) => {
+        if (fileOrFolder.isDirectory())
+          return [
+            ...buffer,
+            ...this.listFiles(
+              join(folder, fileOrFolder.name),
+              fileOrFolder.name + "/"
+            ),
+          ];
+        else return [...buffer, prefix + fileOrFolder.name];
+      },
+      [] as string[]
+    );
   }
 }
