@@ -159,7 +159,7 @@ export class NextJSStack extends Stack {
     });
   }
 
-  private listFiles(folder: string, prefix = "/"): string[] {
+  private listFiles(folder: string, relativePrefix = "/"): string[] {
     return readdirSync(folder, { withFileTypes: true }).reduce(
       (buffer, fileOrFolder) => {
         if (fileOrFolder.isDirectory())
@@ -167,10 +167,10 @@ export class NextJSStack extends Stack {
             ...buffer,
             ...this.listFiles(
               join(folder, fileOrFolder.name),
-              fileOrFolder.name + "/"
+              join(relativePrefix, fileOrFolder.name)
             ),
           ];
-        else return [...buffer, prefix + fileOrFolder.name];
+        else return [...buffer, join(relativePrefix, fileOrFolder.name)];
       },
       [] as string[]
     );
