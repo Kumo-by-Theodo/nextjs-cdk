@@ -1,5 +1,6 @@
 import { Duration, RemovalPolicy, Stack, StackProps } from "aws-cdk-lib";
 import {
+  AllowedMethods,
   CachePolicy,
   Distribution,
   LambdaEdgeEventType,
@@ -19,6 +20,7 @@ export class NextJSStack extends Stack {
   private nextCloudfront: Distribution;
   private defaultCachePolicy: CachePolicy;
   private defaultHandler: NodejsFunction;
+  private apiHandler: NodejsFunction;
 
   constructor(
     scope: Construct,
@@ -29,6 +31,7 @@ export class NextJSStack extends Stack {
     super(scope, id, props);
 
     this.defaultHandler = this.prepareDefaultHandler();
+    this.apiHandler = this.prepareApiHandler();
 
     this.mainNextBucket = new Bucket(this, "NextJSMainStorage", {
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
@@ -88,10 +91,11 @@ export class NextJSStack extends Stack {
         edgeLambdas: [
           {
             eventType: LambdaEdgeEventType.ORIGIN_REQUEST,
-            functionVersion: this.defaultHandler.currentVersion,
+            functionVersion: this.apiHandler.currentVersion,
             includeBody: true,
           },
         ],
+        allowedMethods: AllowedMethods.ALLOW_ALL,
       }
     );
 
@@ -117,6 +121,15 @@ export class NextJSStack extends Stack {
       sources: [Source.asset(join(nextAppRoot, ".next/static"))],
       distribution: this.nextCloudfront,
       distributionPaths: ["/_next/static/*"],
+    });
+  }
+
+  private prepareApiHandler() {
+    const apiHandlerFolder = join(__dirname, "../handlers/api");
+
+    return new NodejsFunction(this, "NextJSApi", {
+      entry: join(apiHandlerFolder, "index.ts"),
+      logRetention: RetentionDays.ONE_DAY,
     });
   }
 
