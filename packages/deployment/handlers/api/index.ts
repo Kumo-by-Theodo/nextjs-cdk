@@ -15,3 +15,10 @@ const handler: CloudFrontRequestHandler = async (event) => {
 };
 
 module.exports = { handler };
+
+
+/**
+ * How is handled an api on Next's side : 
+ * https://github.com/vercel/next.js/blob/canary/packages/next/server/next-server.ts#L747
+ * 
+ */

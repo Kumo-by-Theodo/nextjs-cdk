@@ -20,6 +20,12 @@ import { IncomingMessage, ServerResponse } from "http";
  * @param request
  * @returns
  */
+
+
+/**
+ * Maybe reuse the work done here
+ * https://github.com/serverless-nextjs/serverless-next.js/blob/8e1a42baebe27e260605bb96b63a980322f84566/packages/compat-layers/lambda-at-edge-compat/next-aws-cloudfront.js#L0-L1
+ */
 export const createNextRequestObject = (
   request: CloudFrontRequest
 ): NodeNextRequest => {
@@ -29,14 +35,22 @@ export const createNextRequestObject = (
       .map(({ key, header, value }) => [key ?? header, value])
   );
 
-  return new NodeNextRequest({
-    method: "",
-    url: "",
+  const req = new NodeNextRequest({
+    method: request.method,
+    url: request.uri + request.querystring,
+    headers,
     cookies: {},
+    httpVersion: '1.0',
+    httpVersionMajor: 1,
+    httpVersionMinor: 0,
+    complete: true,
     /** body, headers... */
   } as IncomingMessage & {
     cookies?: NextApiRequestCookies;
   });
+
+
+  return req
 };
 
 /**
