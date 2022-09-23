@@ -2,10 +2,8 @@
   "compilerOptions": {
     "target": "ES2018",
     "module": "commonjs",
-    "lib": [
-      "es2018"
-    ],
-    "types": ["node"],
+    "lib": ["es2018"],
+    "types": ["node", "jest"],
     "declaration": true,
     "strict": true,
     "noImplicitAny": true,
@@ -20,12 +18,7 @@
     "inlineSources": true,
     "experimentalDecorators": true,
     "strictPropertyInitialization": false,
-    "typeRoots": [
-      "./node_modules/@types"
-    ]
+    "typeRoots": ["./node_modules/@types"]
   },
-  "exclude": [
-    "node_modules",
-    "cdk.out"
-  ]
+  "exclude": ["node_modules", "cdk.out"]
 }
