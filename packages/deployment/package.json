@@ -1,9 +1,7 @@
 {
   "name": "deployment",
   "version": "0.1.0",
-  "bin": {
-    "deployment": "bin/deployment.js"
-  },
+  "bin": "bin/deployment.js",
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
@@ -24,7 +22,7 @@
     "next": "^12.3.0",
     "ts-jest": "^27.1.4",
     "ts-node": "^10.9.1",
-    "typescript": "~3.9.7"
+    "typescript": "^4.8.3"
   },
   "dependencies": {
     "aws-cdk-lib": "2.34.0",

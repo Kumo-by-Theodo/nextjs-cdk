@@ -2,18 +2,24 @@
   "compilerOptions": {
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
-    "types": ["node", "aws-cloudfront-function"],
+    "types": ["node", "aws-cloudfront-function", "jest"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
+    "removeComments": true,
+    "resolveJsonModule": true,
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "node",
     "jsx": "preserve",
-    "incremental": true
-  },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules"]
+    "incremental": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "sourceMap": true,
+    "noImplicitReturns": true,
+    "declaration": true,
+    "declarationMap": true
+  }
 }
