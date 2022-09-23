@@ -6,7 +6,10 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "deploy": "cdk deploy",
+    "test-type": "tsc --noEmit",
+    "test-unit": "jest"
   },
   "devDependencies": {
     "@aws-sdk/client-cloudfront": "^3.168.0",
