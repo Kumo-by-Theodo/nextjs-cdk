@@ -1,5 +1,5 @@
 export type ParamsMapping = { [k: string]: string };
-type Fallback = false | "blocking";
+type Fallback = false | 'blocking';
 type RouteKeys = { [k: string]: string };
 
 export type defaultRuntimeManifest = {

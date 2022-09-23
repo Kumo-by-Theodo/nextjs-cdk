@@ -1,4 +1,4 @@
-import { useRouter } from "next/router";
+import { useRouter } from 'next/router';
 
 export default function DynSlug({ slug }: { slug: string }) {
   const { query } = useRouter();
@@ -21,7 +21,7 @@ export const getStaticProps = ({ params }: { params: { slug: string } }) => {
 
 export const getStaticPaths = () => {
   return {
-    paths: ["/dyn/page1", "/dyn/page2", "/dyn/page3"],
+    paths: ['/dyn/page1', '/dyn/page2', '/dyn/page3'],
     fallback: false,
   };
 };

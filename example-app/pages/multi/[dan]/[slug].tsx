@@ -1,4 +1,4 @@
-import { useRouter } from "next/router";
+import { useRouter } from 'next/router';
 
 export default function DynSlug({ slug, dan }: { slug: string; dan: string }) {
   const { query } = useRouter();
@@ -13,11 +13,7 @@ export default function DynSlug({ slug, dan }: { slug: string; dan: string }) {
   );
 }
 
-export const getStaticProps = ({
-  params,
-}: {
-  params: { dan: string; slug: string };
-}) => {
+export const getStaticProps = ({ params }: { params: { dan: string; slug: string } }) => {
   return {
     props: { slug: params.slug, dan: params.dan },
   };
@@ -25,7 +21,7 @@ export const getStaticProps = ({
 
 export const getStaticPaths = () => {
   return {
-    paths: ["/multi/tip/top", "/multi/top/tip"],
+    paths: ['/multi/tip/top', '/multi/top/tip'],
     fallback: false,
   };
 };
