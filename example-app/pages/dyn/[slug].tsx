@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 
-export default function DynSlug({ slug }: { slug: string }) {
+export default ({ slug }: { slug: string }): JSX.Element => {
   const { query } = useRouter();
 
   return (
@@ -9,17 +9,24 @@ export default function DynSlug({ slug }: { slug: string }) {
       <p>
         You are welcome into <span>{slug}</span>
       </p>
+      <p>
+        Query is <>{query}</>
+      </p>
     </div>
   );
-}
+};
 
-export const getStaticProps = ({ params }: { params: { slug: string } }) => {
+export const getStaticProps = ({
+  params,
+}: {
+  params: { slug: string };
+}): Record<string, unknown> => {
   return {
     props: { slug: params.slug },
   };
 };
 
-export const getStaticPaths = () => {
+export const getStaticPaths = (): Record<string, unknown> => {
   return {
     paths: ['/dyn/page1', '/dyn/page2', '/dyn/page3'],
     fallback: false,

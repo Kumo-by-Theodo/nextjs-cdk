@@ -1,8 +1,9 @@
 import { CloudFrontRequestHandler, CloudFrontResultResponse } from 'aws-lambda';
+
 /**
  * Function triggered by Cloudfront as an origin request
  */
-const handler: CloudFrontRequestHandler = async event => {
+const handler: CloudFrontRequestHandler = async (): Promise<CloudFrontResultResponse> => {
   const response: CloudFrontResultResponse = {
     status: '200',
     statusDescription: 'OK',

@@ -120,9 +120,12 @@ export class NextJSStack extends Stack {
   private prepareDefaultHandler() {
     const defaultHandlerFolder = join(__dirname, '../handlers/default');
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-var-requires
     const pagesManifest = require(join(this.nextAppRoot, '.next/serverless/pages-manifest.json'));
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-var-requires
     const routesManifest = require(join(this.nextAppRoot, '.next/routes-manifest.json'));
-    const prerenderManisgest = require(join(this.nextAppRoot, '.next/prerender-manifest.json'));
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-var-requires
+    const prerenderManifest = require(join(this.nextAppRoot, '.next/prerender-manifest.json'));
 
     const publicFolder = join(this.nextAppRoot, 'public');
     const publicFiles = existsSync(publicFolder) ? this.listFiles(publicFolder) : [];
@@ -130,7 +133,7 @@ export class NextJSStack extends Stack {
     const runtimeManifest = createDefaultHandlerManifest(
       pagesManifest,
       routesManifest,
-      prerenderManisgest,
+      prerenderManifest,
       publicFiles,
     );
 

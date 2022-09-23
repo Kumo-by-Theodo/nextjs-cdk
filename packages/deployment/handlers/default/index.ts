@@ -1,4 +1,4 @@
-import { CloudFrontRequestHandler } from 'aws-lambda';
+import { CloudFrontRequest, CloudFrontRequestEvent, CloudFrontRequestHandler } from 'aws-lambda';
 import { join } from 'path';
 
 import { extractDynamicParams, matchParams } from '../../helpers/dynamic';
@@ -6,12 +6,16 @@ import { defaultRuntimeManifest } from '../../types/manifests';
 /**
  * Function triggered by Cloudfront as an origin request
  */
-const handler: CloudFrontRequestHandler = async event => {
+// eslint-disable-next-line complexity
+const handler: CloudFrontRequestHandler = (
+  event: CloudFrontRequestEvent,
+): Promise<CloudFrontRequest> => {
   const request = event.Records[0].cf.request;
 
   if (!request.uri.startsWith('/_next/')) {
     // Is an initial request (not a request by next in browser)
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-var-requires
     const manifest: defaultRuntimeManifest = require('./manifest.json');
 
     /**
@@ -20,7 +24,7 @@ const handler: CloudFrontRequestHandler = async event => {
     if (manifest.publicFiles.includes(request.uri)) {
       request.uri = join('/public', request.uri);
 
-      return request;
+      return Promise.resolve(request);
     }
 
     /**
@@ -30,7 +34,7 @@ const handler: CloudFrontRequestHandler = async event => {
       if (new RegExp(regex, 'i').test(request.uri)) {
         request.uri = join('/serverless', manifest.staticPages[regex]);
 
-        return request;
+        return Promise.resolve(request);
       }
     }
 
@@ -40,6 +44,7 @@ const handler: CloudFrontRequestHandler = async event => {
     for (const regex in manifest.dynamicPages) {
       if (new RegExp(regex, 'i').test(request.uri)) {
         const params = extractDynamicParams(manifest.dynamicPages[regex].namedRegex, request.uri);
+        // eslint-disable-next-line max-depth
         if (params === null) continue;
 
         const matched = manifest.dynamicPages[regex].prerendered.filter(prerendered =>
@@ -50,20 +55,21 @@ const handler: CloudFrontRequestHandler = async event => {
           ),
         );
 
+        // eslint-disable-next-line max-depth
         if (matched.length === 1) {
           request.uri = join('/serverless', matched[0].file);
 
-          return request;
+          return Promise.resolve(request);
         }
       }
     }
 
     request.uri = join('/serverless', manifest.notFound);
 
-    return request;
+    return Promise.resolve(request);
   }
 
-  return request;
+  return Promise.resolve(request);
 };
 
 module.exports = { handler };
