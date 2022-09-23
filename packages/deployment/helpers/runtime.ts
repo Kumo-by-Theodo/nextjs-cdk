@@ -1,4 +1,4 @@
-import { CloudFrontRequest, CloudFrontResponse } from 'aws-lambda';
+import { CloudFrontRequest } from 'aws-lambda';
 import { IncomingMessage, ServerResponse } from 'http';
 import { NextApiRequestCookies, SYMBOL_CLEARED_COOKIES } from 'next/dist/server/api-utils';
 import { NodeNextRequest, NodeNextResponse } from 'next/dist/server/base-http/node';
@@ -49,6 +49,6 @@ export const createNextRequestObject = (request: CloudFrontRequest): NodeNextReq
  *
  * https://github.com/vercel/next.js/blob/canary/packages/next/server/base-http/index.ts#L29
  */
-export const createNextResponseObject = (request: CloudFrontRequest): NodeNextResponse => {
+export const createNextResponseObject = (_request: CloudFrontRequest): NodeNextResponse => {
   return new NodeNextResponse({} as ServerResponse & { [SYMBOL_CLEARED_COOKIES]?: boolean });
 };

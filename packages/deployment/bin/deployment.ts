@@ -2,7 +2,7 @@
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
 import { exec } from 'child_process';
-import { existsSync, open, openSync, readFileSync, readSync } from 'fs';
+import { existsSync } from 'fs';
 import { join } from 'path';
 import { cwd, exit } from 'process';
 
