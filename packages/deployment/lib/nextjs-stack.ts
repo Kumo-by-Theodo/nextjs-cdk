@@ -114,6 +114,34 @@ export class NextJSStack extends Stack {
     return new NodejsFunction(this, 'NextJSApi', {
       entry: join(apiHandlerFolder, 'index.ts'),
       logRetention: RetentionDays.ONE_DAY,
+      bundling: {
+        externalModules: ["./runtime/api/hello.js"],
+        commandHooks: {
+          beforeInstall: () => [],
+          afterBundling: () => [],
+          beforeBundling: (inputDir, outputDir) => {
+            const apiHandlers = join(
+              this.nextAppRoot,
+              ".next/serverless/pages/api/hello.js"
+            );
+            const webpackApiRuntime = join(
+              this.nextAppRoot,
+              ".next/serverless/webpack-api-runtime.js"
+            );
+            const chunksFolder = join(
+              this.nextAppRoot,
+              ".next/serverless/chunks"
+            );
+            return [
+              `mkdir ${join(outputDir, "runtime")}`,
+              `mkdir ${join(outputDir, "runtime/api")}`,
+              `cp -r ${chunksFolder} ${join(outputDir, "/chunks")}`,
+              `cp ${apiHandlers} ${join(outputDir, "/runtime/api")}`,
+              `cp ${webpackApiRuntime} ${outputDir}`,
+            ];
+          },
+        },
+      },
     });
   }
 

@@ -1,19 +1,27 @@
-import { CloudFrontRequestHandler, CloudFrontResultResponse } from 'aws-lambda';
-
+import { CloudFrontRequestHandler, CloudFrontResultResponse } from "aws-lambda";
+import toNextObject from "../../helpers/runtime";
 /**
  * Function triggered by Cloudfront as an origin request
  */
-const handler: CloudFrontRequestHandler = async (): Promise<CloudFrontResultResponse> => {
-  const response: CloudFrontResultResponse = {
-    status: '200',
-    statusDescription: 'OK',
-    headers: {
-      'content-type': [{ key: 'Content-Type', value: 'application/json' }],
-    },
-    body: JSON.stringify({ test: 'api lambda' }),
-  };
+const handler: CloudFrontRequestHandler = async (event) => {
+  const { req, res, responsePromise } = toNextObject(event.Records[0].cf, {
+    enableHTTPCompression: false,
+    rewrittenUri: undefined,
+  });
+  if (!req.hasOwnProperty("originalRequest")) {
+    Object.defineProperty(req, "originalRequest", {
+      get: () => req,
+    });
+  }
+  if (!res.hasOwnProperty("originalResponse")) {
+    Object.defineProperty(res, "originalResponse", {
+      get: () => res,
+    });
+  }
 
-  return response;
+  require("./runtime/api/hello.js").default(req, res);
+
+  return await responsePromise;
 };
 
 module.exports = { handler };
