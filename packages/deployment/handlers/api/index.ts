@@ -1,30 +1,22 @@
-import { CloudFrontRequestHandler, CloudFrontResultResponse } from "aws-lambda";
-import toNextObject from "../../helpers/runtime";
+import { CloudFrontRequestHandler } from "aws-lambda";
+import toNextHandlerInput from "../../helpers/toNextHandlerInput";
 /**
  * Function triggered by Cloudfront as an origin request
  */
-const handler: CloudFrontRequestHandler = async (event) => {
-  const { req, res, responsePromise } = toNextObject(event.Records[0].cf, {
-    enableHTTPCompression: false,
-    rewrittenUri: undefined,
-  });
-  if (!req.hasOwnProperty("originalRequest")) {
-    Object.defineProperty(req, "originalRequest", {
-      get: () => req,
-    });
-  }
-  if (!res.hasOwnProperty("originalResponse")) {
-    Object.defineProperty(res, "originalResponse", {
-      get: () => res,
-    });
-  }
+export const handler: CloudFrontRequestHandler = async (event) => {
+  const { req, res, responsePromise } = toNextHandlerInput(
+    //@ts-expect-error
+    event.Records[0].cf,
+    {
+      enableHTTPCompression: false,
+      rewrittenUri: undefined,
+    }
+  );
 
   require("./runtime/api/hello.js").default(req, res);
 
   return await responsePromise;
 };
-
-module.exports = { handler };
 
 /**
  * How is handled an api on Next's side :
