@@ -1,11 +1,11 @@
-import { readOnlyCloudFrontHeaders } from "./constants";
+import { readOnlyCloudFrontHeaders } from './constants';
 
 type Headers = { [key: string]: string | string[] };
 
 export const toCloudFrontHeaders = (
   headers: Headers,
   headerNames: { [key: string]: string },
-  originalHeaders: Headers
+  originalHeaders: Headers,
 ) => {
   const result: Headers = {};
 
@@ -24,7 +24,7 @@ export const toCloudFrontHeaders = (
     result[headerKey] = [];
 
     if (headerValue instanceof Array) {
-      headerValue.forEach((val) => {
+      headerValue.forEach(val => {
         if (val) {
           //@ts-expect-error
           result[headerKey].push({

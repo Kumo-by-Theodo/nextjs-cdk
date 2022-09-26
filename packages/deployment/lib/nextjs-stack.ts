@@ -35,14 +35,14 @@ export class NextJSStack extends Stack {
       removalPolicy: RemovalPolicy.DESTROY,
     });
 
-    this.defaultCachePolicy = new CachePolicy(this, 'NextJSDefaultCachePolicy', {
+    this.defaultCachePolicy = new CachePolicy(this, 'MySLSNextJSDefaultCachePolicy', {
       defaultTtl: Duration.minutes(10),
     });
 
-    const longCachePolicy = new CachePolicy(this, 'NextJSLongCachePolicy', {
+    const longCachePolicy = new CachePolicy(this, 'MySLSNextJSLongCachePolicy', {
       defaultTtl: Duration.days(30),
     });
-    const noCachePolicy = new CachePolicy(this, 'NextJSNoCachePolicy', {
+    const noCachePolicy = new CachePolicy(this, 'MySLSNextJSNoCachePolicy', {
       minTtl: Duration.days(0),
       defaultTtl: Duration.days(0),
       maxTtl: Duration.days(0),
@@ -115,28 +115,23 @@ export class NextJSStack extends Stack {
       entry: join(apiHandlerFolder, 'index.ts'),
       logRetention: RetentionDays.ONE_DAY,
       bundling: {
-        externalModules: ["./runtime/api/hello.js"],
+        externalModules: ['./runtime/api/hello.js'],
         commandHooks: {
           beforeInstall: () => [],
           afterBundling: () => [],
-          beforeBundling: (inputDir, outputDir) => {
-            const apiHandlers = join(
-              this.nextAppRoot,
-              ".next/serverless/pages/api/hello.js"
-            );
+          beforeBundling: (_inputDir, outputDir) => {
+            const apiHandlers = join(this.nextAppRoot, '.next/serverless/pages/api/hello.js');
             const webpackApiRuntime = join(
               this.nextAppRoot,
-              ".next/serverless/webpack-api-runtime.js"
+              '.next/serverless/webpack-api-runtime.js',
             );
-            const chunksFolder = join(
-              this.nextAppRoot,
-              ".next/serverless/chunks"
-            );
+            const chunksFolder = join(this.nextAppRoot, '.next/serverless/chunks');
+
             return [
-              `mkdir ${join(outputDir, "runtime")}`,
-              `mkdir ${join(outputDir, "runtime/api")}`,
-              `cp -r ${chunksFolder} ${join(outputDir, "/chunks")}`,
-              `cp ${apiHandlers} ${join(outputDir, "/runtime/api")}`,
+              `mkdir ${join(outputDir, 'runtime')}`,
+              `mkdir ${join(outputDir, 'runtime/api')}`,
+              `cp -r ${chunksFolder} ${join(outputDir, '/chunks')}`,
+              `cp ${apiHandlers} ${join(outputDir, '/runtime/api')}`,
               `cp ${webpackApiRuntime} ${outputDir}`,
             ];
           },

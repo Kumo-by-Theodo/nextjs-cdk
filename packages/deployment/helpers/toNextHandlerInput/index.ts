@@ -1,11 +1,13 @@
-import { CloudFrontRequest, CloudFrontResultResponse } from "aws-lambda";
-import { HttpStatusCodes, specialNodeHeaders } from "./constants";
-import { isGzipSupported } from "./isGzipSupported";
-import { toCloudFrontHeaders } from "./toCloudFrontHeaders";
-import * as Stream from "stream";
-import * as zlib from "zlib";
-import * as http from "http";
-import { NextApiRequest, NextApiResponse } from "next/types";
+/* eslint-disable complexity */
+import { CloudFrontRequest, CloudFrontResultResponse } from 'aws-lambda';
+import * as http from 'http';
+import { NextApiRequest, NextApiResponse } from 'next/types';
+import * as Stream from 'stream';
+import * as zlib from 'zlib';
+
+import { HttpStatusCodes, specialNodeHeaders } from './constants';
+import { isGzipSupported } from './isGzipSupported';
+import { toCloudFrontHeaders } from './toCloudFrontHeaders';
 
 interface CompatOptions {
   enableHTTPCompression?: boolean;
@@ -29,7 +31,7 @@ const defaultOptions = {
 
 const toNextHandlerInput = (
   event: CloudFrontEvent,
-  { enableHTTPCompression, rewrittenUri }: CompatOptions = defaultOptions
+  { enableHTTPCompression, rewrittenUri }: CompatOptions = defaultOptions,
 ): Return => {
   const { request: cfRequest, response: cfResponse = { headers: {} } } = event;
 
@@ -39,10 +41,7 @@ const toNextHandlerInput = (
 
   const newStream = new Stream.Readable();
 
-  const req = Object.assign(
-    newStream,
-    http.IncomingMessage.prototype
-  ) as unknown as NextApiRequest;
+  const req = Object.assign(newStream, http.IncomingMessage.prototype) as unknown as NextApiRequest;
   req.url = rewrittenUri || cfRequest.uri;
   req.method = cfRequest.method;
   req.rawHeaders = [];
@@ -57,7 +56,7 @@ const toNextHandlerInput = (
   for (const lowercaseKey of Object.keys(headers)) {
     const headerKeyValPairs = headers[lowercaseKey];
 
-    headerKeyValPairs.forEach((keyVal) => {
+    headerKeyValPairs.forEach(keyVal => {
       req.rawHeaders.push(keyVal.key as string);
       req.rawHeaders.push(keyVal.value);
     });
@@ -74,10 +73,7 @@ const toNextHandlerInput = (
   };
 
   if (cfRequest.body && cfRequest.body.data) {
-    req.push(
-      cfRequest.body.data,
-      cfRequest.body.encoding ? "base64" : undefined
-    );
+    req.push(cfRequest.body.data, cfRequest.body.encoding ? 'base64' : undefined);
   }
 
   req.push(null);
@@ -87,7 +83,7 @@ const toNextHandlerInput = (
   };
   res.finished = false;
 
-  Object.defineProperty(res, "statusCode", {
+  Object.defineProperty(res, 'statusCode', {
     get() {
       return response.status;
     },
@@ -106,13 +102,14 @@ const toNextHandlerInput = (
     if (headers) {
       res.headers = Object.assign(res.headers, headers);
     }
+
     return res;
   };
   //@ts-expect-error
-  res.write = (chunk) => {
+  res.write = chunk => {
     if (!response.body) {
       //@ts-expect-error
-      response.body = Buffer.from("");
+      response.body = Buffer.from('');
     }
     //@ts-expect-error
     response.body = Buffer.concat([
@@ -122,12 +119,12 @@ const toNextHandlerInput = (
     ]);
   };
 
-  let shouldGzip = enableHTTPCompression && isGzipSupported(headers);
+  const shouldGzip = enableHTTPCompression && isGzipSupported(headers);
 
-  const responsePromise = new Promise((resolve) => {
+  const responsePromise = new Promise(resolve => {
     //@ts-expect-error
-    res.end = (text) => {
-      if (res.finished === true) {
+    res.end = text => {
+      if (res.finished) {
         return;
       }
 
@@ -140,24 +137,22 @@ const toNextHandlerInput = (
       }
 
       if (response.body) {
-        response.bodyEncoding = "base64";
+        response.bodyEncoding = 'base64';
         response.body = shouldGzip
-          ? zlib.gzipSync(response.body).toString("base64")
-          : Buffer.from(response.body).toString("base64");
+          ? zlib.gzipSync(response.body).toString('base64')
+          : Buffer.from(response.body).toString('base64');
       }
       //@ts-expect-error
       response.headers = toCloudFrontHeaders(
         //@ts-expect-error
         res.headers,
         headerNames,
-        cfResponse.headers
+        cfResponse.headers,
       );
 
       if (shouldGzip) {
         //@ts-expect-error
-        response.headers["content-encoding"] = [
-          { key: "Content-Encoding", value: "gzip" },
-        ];
+        response.headers['content-encoding'] = [{ key: 'Content-Encoding', value: 'gzip' }];
       }
       resolve(response);
     };
@@ -168,28 +163,28 @@ const toNextHandlerInput = (
     //@ts-expect-error
     headerNames[name.toLowerCase()] = name;
   };
-  res.removeHeader = (name) => {
+  res.removeHeader = name => {
     delete res.headers[name.toLowerCase()];
   };
   //@ts-expect-error
-  res.getHeader = (name) => {
+  res.getHeader = name => {
     return res.headers[name.toLowerCase()];
   };
   //@ts-expect-error
   res.getHeaders = () => {
     return res.headers;
   };
-  res.hasHeader = (name) => {
+  res.hasHeader = name => {
     return !!res.getHeader(name);
   };
 
-  if (!req.hasOwnProperty("originalRequest")) {
-    Object.defineProperty(req, "originalRequest", {
+  if (!req.hasOwnProperty('originalRequest')) {
+    Object.defineProperty(req, 'originalRequest', {
       get: () => req,
     });
   }
-  if (!res.hasOwnProperty("originalResponse")) {
-    Object.defineProperty(res, "originalResponse", {
+  if (!res.hasOwnProperty('originalResponse')) {
+    Object.defineProperty(res, 'originalResponse', {
       get: () => res,
     });
   }

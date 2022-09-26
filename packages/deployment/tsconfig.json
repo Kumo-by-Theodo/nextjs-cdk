@@ -3,7 +3,8 @@
   "compilerOptions": {
     "baseUrl": ".",
     "outDir": "./dist",
-    "rootDir": "."
+    "rootDir": ".",
+    "module": "commonjs"
   },
   "include": ["./**/*.ts"],
   "exclude": ["node_modules", "cdk.out"]

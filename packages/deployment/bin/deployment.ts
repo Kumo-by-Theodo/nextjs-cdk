@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
+import { DefaultStackSynthesizer } from 'aws-cdk-lib';
 import { exec } from 'child_process';
 import { existsSync } from 'fs';
 import { join } from 'path';
@@ -18,7 +19,9 @@ if (!existsSync(join(nextAppRoot, 'next.config.js'))) {
 }
 
 try {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-var-requires
   const nextConfig = require(join(nextAppRoot, 'next.config.js'));
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   if (nextConfig.target !== 'serverless') {
     console.error('Please set your next target to `serverless` before attempting a deploy');
     exit(1);
@@ -41,6 +44,7 @@ exec(`${join(nextAppRoot, 'node_modules/.bin/next')} build ${nextAppRoot}`, (err
       env: {
         region: 'us-east-1',
       },
+      synthesizer: new DefaultStackSynthesizer({ qualifier: 'myslsnext' }),
     });
   }
 });

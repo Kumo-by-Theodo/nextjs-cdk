@@ -10,7 +10,7 @@ export default ({ slug, dan }: { slug: string; dan: string }): JSX.Element => {
         You are welcome into <span>{dan}</span> <span>{slug}</span>
       </p>
       <p>
-        Query is <>{query}</>
+        Query is <>{JSON.stringify(query)}</>
       </p>
     </div>
   );
@@ -29,6 +29,6 @@ export const getStaticProps = ({
 export const getStaticPaths = (): Record<string, unknown> => {
   return {
     paths: ['/multi/tip/top', '/multi/top/tip'],
-    fallback: false,
+    fallback: 'blocking',
   };
 };

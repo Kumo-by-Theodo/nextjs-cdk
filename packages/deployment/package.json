@@ -1,13 +1,13 @@
 {
   "name": "deployment",
   "version": "0.1.0",
-  "bin": "bin/deployment.js",
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "deploy": "cdk deploy",
+    "bootstrap": "cdk bootstrap --profile saml --toolkit-stack-name CDKToolkitMySLSNext --qualifier myslsnext",
+    "deploy": "cdk deploy --profile=saml --toolkit-stack-name CDKToolkitMySLSNext",
     "test-type": "tsc --noEmit",
     "test-unit": "jest"
   },
