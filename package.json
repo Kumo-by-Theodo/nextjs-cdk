@@ -1,5 +1,5 @@
 {
-  "name": "sls-cdk-nextjs",
+  "name": "sls-cdk-nextjs-monorepo",
   "version": "0.0.1",
   "description": "A CDK Construct for deploying a NextJS App",
   "main": "index.js",
@@ -15,6 +15,7 @@
     "esbuild": "0",
     "eslint": "^8.23.1",
     "eslint-config-prettier": "^8.5.0",
+    "eslint-import-resolver-typescript": "^2.7.1",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-jest": "^27.0.4",
     "eslint-plugin-prefer-arrow": "^1.2.3",
@@ -23,5 +24,8 @@
     "prettier": "^2.7.1",
     "syncpack": "^8.2.4"
   },
-  "packageManager": "yarn@3.1.1"
+  "packageManager": "yarn@3.1.1",
+  "engines": {
+    "node": "lts/gallium"
+  }
 }

@@ -35,14 +35,14 @@ export class NextJSStack extends Stack {
       removalPolicy: RemovalPolicy.DESTROY,
     });
 
-    this.defaultCachePolicy = new CachePolicy(this, 'MySLSNextJSDefaultCachePolicy', {
+    this.defaultCachePolicy = new CachePolicy(this, 'SLSNextJSDefaultCachePolicy', {
       defaultTtl: Duration.minutes(10),
     });
 
-    const longCachePolicy = new CachePolicy(this, 'MySLSNextJSLongCachePolicy', {
+    const longCachePolicy = new CachePolicy(this, 'SLSNextJSLongCachePolicy', {
       defaultTtl: Duration.days(30),
     });
-    const noCachePolicy = new CachePolicy(this, 'MySLSNextJSNoCachePolicy', {
+    const noCachePolicy = new CachePolicy(this, 'SLSNextJSNoCachePolicy', {
       minTtl: Duration.days(0),
       defaultTtl: Duration.days(0),
       maxTtl: Duration.days(0),
@@ -112,7 +112,7 @@ export class NextJSStack extends Stack {
     const apiHandlerFolder = join(__dirname, '../handlers/api');
 
     return new NodejsFunction(this, 'NextJSApi', {
-      entry: join(apiHandlerFolder, 'index.ts'),
+      entry: join(apiHandlerFolder, 'index.js'),
       logRetention: RetentionDays.ONE_DAY,
       bundling: {
         externalModules: ['./runtime/api/hello.js'],
@@ -163,7 +163,7 @@ export class NextJSStack extends Stack {
     writeFileSync(join(defaultHandlerFolder, 'manifest.json'), JSON.stringify(runtimeManifest));
 
     return new NodejsFunction(this, 'NextJSDefault', {
-      entry: join(defaultHandlerFolder, 'index.ts'),
+      entry: join(defaultHandlerFolder, 'index.js'),
       logRetention: RetentionDays.ONE_DAY,
     });
   }

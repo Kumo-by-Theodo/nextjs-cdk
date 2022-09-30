@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { CloudFrontRequestHandler } from 'aws-lambda';
 
 import toNextHandlerInput from '../../helpers/toNextHandlerInput';
@@ -14,6 +15,7 @@ export const handler: CloudFrontRequestHandler = async event => {
     },
   );
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-var-requires
   require('./runtime/api/hello.js').default(req, res);
 
   return await responsePromise;

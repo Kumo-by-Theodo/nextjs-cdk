@@ -1,11 +1,14 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "baseUrl": ".",
-    "outDir": "./dist",
-    "rootDir": ".",
-    "module": "commonjs"
+    "baseUrl": "src",
+    "rootDir": "src",
+    "composite": true,
+    "outDir": "./dist/types",
+    "noEmit": false,
+    "emitDeclarationOnly": true,
+    "plugins": [{ "transform": "@zerollup/ts-transform-paths" }]
   },
   "include": ["./**/*.ts"],
-  "exclude": ["node_modules", "cdk.out"]
+  "exclude": ["node_modules", "cdk.out", "dist"]
 }

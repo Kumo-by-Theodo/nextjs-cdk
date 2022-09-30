@@ -12,3 +12,6 @@ coverage
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+#Builds
+**/dist
