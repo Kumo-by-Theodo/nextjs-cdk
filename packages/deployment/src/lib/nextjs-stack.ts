@@ -7,14 +7,13 @@ import {
 } from 'aws-cdk-lib/aws-cloudfront';
 import { S3Origin } from 'aws-cdk-lib/aws-cloudfront-origins';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
-import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { BlockPublicAccess, Bucket } from 'aws-cdk-lib/aws-s3';
 import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment';
 import { Construct } from 'constructs';
-import { existsSync, readdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
 
-import { createDefaultHandlerManifest } from '../helpers/manifestBundler';
+import { prepareApiHandler } from './apiLambda';
+import { prepareDefaultHandler } from './defaultLambda';
 
 export class NextJSStack extends Stack {
   private mainNextBucket: Bucket;
@@ -26,8 +25,9 @@ export class NextJSStack extends Stack {
   constructor(scope: Construct, id: string, private nextAppRoot: string, props?: StackProps) {
     super(scope, id, props);
 
-    this.defaultHandler = this.prepareDefaultHandler();
-    this.apiHandler = this.prepareApiHandler();
+    this.defaultHandler = prepareDefaultHandler(this.nextAppRoot, this);
+
+    this.apiHandler = prepareApiHandler(this.nextAppRoot, this);
 
     this.mainNextBucket = new Bucket(this, 'NextJSMainStorage', {
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
@@ -106,79 +106,5 @@ export class NextJSStack extends Stack {
       distribution: this.nextCloudfront,
       distributionPaths: ['/_next/static/*'],
     });
-  }
-
-  private prepareApiHandler() {
-    const apiHandlerFolder = join(__dirname, '../handlers/api');
-
-    return new NodejsFunction(this, 'NextJSApi', {
-      entry: join(apiHandlerFolder, 'index.js'),
-      logRetention: RetentionDays.ONE_DAY,
-      bundling: {
-        externalModules: ['./runtime/api/hello.js'],
-        commandHooks: {
-          beforeInstall: () => [],
-          afterBundling: () => [],
-          beforeBundling: (_inputDir, outputDir) => {
-            const apiHandlers = join(this.nextAppRoot, '.next/serverless/pages/api/hello.js');
-            const webpackApiRuntime = join(
-              this.nextAppRoot,
-              '.next/serverless/webpack-api-runtime.js',
-            );
-            const chunksFolder = join(this.nextAppRoot, '.next/serverless/chunks');
-
-            return [
-              `mkdir ${join(outputDir, 'runtime')}`,
-              `mkdir ${join(outputDir, 'runtime/api')}`,
-              `cp -r ${chunksFolder} ${join(outputDir, '/chunks')}`,
-              `cp ${apiHandlers} ${join(outputDir, '/runtime/api')}`,
-              `cp ${webpackApiRuntime} ${outputDir}`,
-            ];
-          },
-        },
-      },
-    });
-  }
-
-  private prepareDefaultHandler() {
-    const defaultHandlerFolder = join(__dirname, '../handlers/default');
-
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-var-requires
-    const pagesManifest = require(join(this.nextAppRoot, '.next/serverless/pages-manifest.json'));
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-var-requires
-    const routesManifest = require(join(this.nextAppRoot, '.next/routes-manifest.json'));
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-var-requires
-    const prerenderManifest = require(join(this.nextAppRoot, '.next/prerender-manifest.json'));
-
-    const publicFolder = join(this.nextAppRoot, 'public');
-    const publicFiles = existsSync(publicFolder) ? this.listFiles(publicFolder) : [];
-
-    const runtimeManifest = createDefaultHandlerManifest(
-      pagesManifest,
-      routesManifest,
-      prerenderManifest,
-      publicFiles,
-    );
-
-    writeFileSync(join(defaultHandlerFolder, 'manifest.json'), JSON.stringify(runtimeManifest));
-
-    return new NodejsFunction(this, 'NextJSDefault', {
-      entry: join(defaultHandlerFolder, 'index.js'),
-      logRetention: RetentionDays.ONE_DAY,
-    });
-  }
-
-  private listFiles(folder: string, relativePrefix = '/'): string[] {
-    return readdirSync(folder, { withFileTypes: true }).reduce((buffer, fileOrFolder) => {
-      if (fileOrFolder.isDirectory())
-        return [
-          ...buffer,
-          ...this.listFiles(
-            join(folder, fileOrFolder.name),
-            join(relativePrefix, fileOrFolder.name),
-          ),
-        ];
-      else return [...buffer, join(relativePrefix, fileOrFolder.name)];
-    }, [] as string[]);
   }
 }

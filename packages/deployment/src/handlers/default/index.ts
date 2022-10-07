@@ -15,8 +15,8 @@ const handler: CloudFrontRequestHandler = (
   if (!request.uri.startsWith('/_next/')) {
     // Is an initial request (not a request by next in browser)
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-var-requires
-    const manifest: defaultRuntimeManifest = require('./manifest.json');
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const manifest = require('./manifest.json') as defaultRuntimeManifest;
 
     /**
      * If URI matches a known public files, serve this file
