@@ -1,0 +1,6 @@
+{
+  "root": "packages/deployment",
+  "projectType": "library",
+  "tags": [],
+  "implicitDependencies": []
+}
