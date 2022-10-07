@@ -1,0 +1,10 @@
+*.hbs
+.next
+yarn.lock
+.npm
+.webpack
+.esbuild
+**/coverage
+**/dist
+**/build
+**/nx-cache

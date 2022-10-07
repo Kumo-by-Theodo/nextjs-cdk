@@ -1,0 +1,62 @@
+{
+  "settings": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true,
+      "source.fixAll.stylelint": true
+    },
+    "search.exclude": {
+      "**/coverage": true,
+      "**/.next": true,
+      "**/node_modules": true,
+      "**/.serverless": true,
+      "**/build": true,
+      "**/bundles": true,
+      "**/dist": true,
+      ".yarn": true,
+      "yarn.lock": true
+    },
+    "[dotenv][ignore][properties][shellscript]": {
+      "editor.defaultFormatter": "foxundermoon.shell-format"
+    },
+    "[html][javascript][json]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "jest.autoRun": "off",
+    "jest.disabledWorkspaceFolders": ["✨ root"],
+    "jest.jestCommandLine": "yarn jest",
+    "jest.showTerminalOnLaunch": false,
+    "jest.showCoverageOnLoad": true,
+    "jest.coverageFormatter": "DefaultFormatter",
+    "cSpell.words": ["esbuild", "nextjs"],
+    "files.eol": "\n",
+    "debug.internalConsoleOptions": "neverOpen"
+  },
+  "extensions": {
+    "recommendations": [
+      "esbenp.prettier-vscode",
+      "dbaeumer.vscode-eslint",
+      "eamodio.gitlens",
+      "editorconfig.editorconfig",
+      "foxundermoon.shell-format",
+      "orta.vscode-jest",
+      "streetsidesoftware.code-spell-checker"
+    ]
+  },
+  "folders": [
+    {
+      "path": ".",
+      "name": "✨ root"
+    },
+    {
+      "path": "example-app",
+      "name": "🚀 example-app/ [app]"
+    },
+    {
+      "path": "packages/deployment",
+      "name": "🔧 packages/deployment/ [package]"
+    }
+  ]
+}

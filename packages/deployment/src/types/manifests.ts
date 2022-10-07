@@ -1,5 +1,5 @@
 export type ParamsMapping = { [k: string]: string };
-type Fallback = false | "blocking";
+type Fallback = false | 'blocking';
 type RouteKeys = { [k: string]: string };
 
 export type defaultRuntimeManifest = {
@@ -42,7 +42,7 @@ export type RoutesManifest = {
   staticRoutes: {
     page: keyof PagesManifest;
     regex: string;
-    routeKeys: {};
+    routeKeys: Record<string, unknown>;
     namedRegex: string;
   }[];
   dataRoutes: [];
