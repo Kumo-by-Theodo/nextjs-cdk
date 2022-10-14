@@ -1,16 +1,17 @@
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { Construct } from 'constructs';
-import { existsSync, readdirSync, writeFileSync } from 'fs';
-import { tmpdir } from 'os';
+import { existsSync, readdirSync } from 'fs';
 import { join } from 'path';
 
-import { createDefaultHandlerManifest } from 'helpers/manifestBundler';
+import { RUNTIME_SETTINGS_FILE } from 'constants/handlerPaths';
 import {
   requirePageManifest,
   requirePreRenderManifest,
   requireRoutesManifest,
 } from 'helpers/nextImport';
+import { createFileInTempDir } from 'runtimeSettings';
+import { createDefaultRuntimeSettings } from 'runtimeSettings/default';
 
 const DEFAULT_LAMBDA_NAME = 'NextJSDefault';
 
@@ -24,7 +25,7 @@ export const prepareDefaultHandler = (nextAppRoot: string, scope: Construct): No
   const publicFolder = join(nextAppRoot, 'public');
   const publicFiles = existsSync(publicFolder) ? listFiles(publicFolder) : [];
 
-  const runtimeManifest = createDefaultHandlerManifest(
+  const runtimeData = createDefaultRuntimeSettings(
     pagesManifest,
     routesManifest,
     prerenderManifest,
@@ -35,14 +36,13 @@ export const prepareDefaultHandler = (nextAppRoot: string, scope: Construct): No
     entry: join(defaultHandlerFolder, 'index.js'),
     logRetention: RetentionDays.ONE_DAY,
     bundling: {
-      externalModules: ['./manifest.json'],
+      externalModules: [RUNTIME_SETTINGS_FILE],
       commandHooks: {
         beforeInstall: () => [],
         beforeBundling: (_, outputDir) => {
-          const tmp_manifest = join(tmpdir(), 'manifest.json');
-          writeFileSync(tmp_manifest, JSON.stringify(runtimeManifest));
+          const tmp_file = createFileInTempDir(runtimeData);
 
-          return [`cp ${tmp_manifest} ${outputDir}`];
+          return [`mv ${tmp_file} ${outputDir}`];
         },
         afterBundling: () => [],
       },

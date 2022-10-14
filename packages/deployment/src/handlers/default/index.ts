@@ -1,8 +1,10 @@
 import { CloudFrontRequest, CloudFrontRequestEvent, CloudFrontRequestHandler } from 'aws-lambda';
 import { join } from 'path';
 
+import { RUNTIME_SETTINGS_FILE } from 'constants/handlerPaths';
+
 import { extractDynamicParams, matchParams } from '../../helpers/dynamic';
-import { defaultRuntimeManifest } from '../../types/manifests';
+import { defaultRuntimeSettings } from '../../types/runtimeSettings';
 /**
  * Function triggered by Cloudfront as an origin request
  */
@@ -16,7 +18,7 @@ const handler: CloudFrontRequestHandler = (
     // Is an initial request (not a request by next in browser)
 
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const manifest = require('./manifest.json') as defaultRuntimeManifest;
+    const manifest = require(RUNTIME_SETTINGS_FILE) as defaultRuntimeSettings;
 
     /**
      * If URI matches a known public files, serve this file
@@ -42,26 +44,23 @@ const handler: CloudFrontRequestHandler = (
      * If URI matches a static page with dynamic URI, serve the static file
      */
     for (const regex in manifest.dynamicPages) {
-      if (new RegExp(regex, 'i').test(request.uri)) {
-        const params = extractDynamicParams(manifest.dynamicPages[regex].namedRegex, request.uri);
-        // eslint-disable-next-line max-depth
-        if (params === null) continue;
+      if (!new RegExp(regex, 'i').test(request.uri)) continue;
 
-        const matched = manifest.dynamicPages[regex].prerendered.filter(prerendered =>
-          matchParams(
-            prerendered.params,
-            params,
-            Object.keys(manifest.dynamicPages[regex].routeKeys),
-          ),
-        );
+      const params = extractDynamicParams(manifest.dynamicPages[regex].namedRegex, request.uri);
+      if (params === null) continue;
 
-        // eslint-disable-next-line max-depth
-        if (matched.length === 1) {
-          request.uri = join('/serverless', matched[0].file);
+      const matched = manifest.dynamicPages[regex].prerendered.filter(prerendered =>
+        matchParams(
+          prerendered.params,
+          params,
+          Object.keys(manifest.dynamicPages[regex].routeKeys),
+        ),
+      );
+      if (matched.length !== 1) continue;
 
-          return Promise.resolve(request);
-        }
-      }
+      request.uri = join('/serverless', matched[0].file);
+
+      return Promise.resolve(request);
     }
 
     request.uri = join('/serverless', manifest.notFound);
