@@ -1,21 +1,6 @@
 export type ParamsMapping = { [k: string]: string };
-type Fallback = false | 'blocking';
-type RouteKeys = { [k: string]: string };
-
-export type defaultRuntimeManifest = {
-  staticPages: Record<string, keyof PagesManifest>;
-  publicFiles: string[];
-  dynamicPages: Record<
-    string,
-    {
-      fallback: Fallback;
-      routeKeys: RouteKeys;
-      namedRegex: string;
-      prerendered: { params: ParamsMapping; file: string }[];
-    }
-  >;
-  notFound: string;
-};
+export type Fallback = false | 'blocking';
+export type RouteKeys = { [k: string]: string };
 
 /**
  * Exact definition can be found here

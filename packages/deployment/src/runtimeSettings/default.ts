@@ -1,19 +1,20 @@
+import { extractDynamicParams, filenameFromParams } from 'helpers/dynamic';
+import { defaultRuntimeSettings } from 'types/runtimeSettings';
+
 import {
-  defaultRuntimeManifest,
   PagesManifest,
   ParamsMapping,
   PrerenderManifest,
   RoutesManifest,
 } from '../types/manifests';
-import { extractDynamicParams, filenameFromParams } from './dynamic';
 
-export const createDefaultHandlerManifest = (
+export const createDefaultRuntimeSettings = (
   pagesManifest: PagesManifest,
   routesManifest: RoutesManifest,
   prerenderManifest: PrerenderManifest,
   publicFiles: string[],
-): defaultRuntimeManifest => {
-  const runtimeManifest = {
+): defaultRuntimeSettings => {
+  const runtimeSettings = {
     staticPages: Object.fromEntries(
       routesManifest.staticRoutes.map(staticRoute => [
         staticRoute.regex,
@@ -44,8 +45,9 @@ export const createDefaultHandlerManifest = (
         },
       ]),
     ),
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     notFound: pagesManifest['/404'] ?? '/',
   };
 
-  return runtimeManifest;
+  return runtimeSettings;
 };

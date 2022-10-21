@@ -148,13 +148,6 @@ module.exports = {
             allowBoolean: true,
           },
         ],
-        'no-restricted-syntax': [
-          'error',
-          {
-            selector: 'TSEnumDeclaration',
-            message: "Don't declare enums, prefer objects and/or union types",
-          },
-        ],
       },
     },
   ],

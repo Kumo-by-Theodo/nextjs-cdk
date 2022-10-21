@@ -12,14 +12,12 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "bootstrap": "cdk bootstrap",
-    "deploy": "cdk deploy",
     "test-type": "tsc --noEmit",
     "test-unit": "jest",
     "package": "rm -rf dist && yarn package-cjs && yarn package-esm && yarn package-types",
     "package-cjs": "NODE_ENV=cjs yarn transpile --out-dir dist/cjs --source-maps",
     "package-esm": "NODE_ENV=esm yarn transpile --out-dir dist/esm --source-maps",
-    "package-types": "ttsc -p tsconfig.build.json",
+    "package-types": "tsc -p tsconfig.build.json",
     "transpile": "babel src --extensions .ts --quiet"
   },
   "devDependencies": {
@@ -39,12 +37,10 @@
     "@zerollup/ts-transform-paths": "^1.7.18",
     "babel-plugin-module-resolver": "^4.1.0",
     "babel-plugin-tsconfig-paths-module-resolver": "^1.0.3",
-    "esbuild": "0",
     "jest": "^27.5.1",
     "next": "^12.3.0",
     "ts-jest": "^27.1.4",
     "ts-node": "^10.9.1",
-    "ttypescript": "^1.5.13",
     "typescript": "^4.8.3"
   },
   "dependencies": {
@@ -52,6 +48,7 @@
     "aws-cdk-lib": "^2.44.0",
     "constructs": "^10.0.0",
     "cookie": "^0.5.0",
+    "esbuild": "^0.15.10",
     "source-map-support": "^0.5.21"
   },
   "nx": {
