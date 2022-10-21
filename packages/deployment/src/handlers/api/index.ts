@@ -22,7 +22,7 @@ export const handler: CloudFrontRequestHandler = async event => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-var-requires
   const runtimeSettings = require(RUNTIME_SETTINGS_FILE) as apiRuntimeSettings;
 
-  const pathname = event.Records[0].cf.request.uri;
+  const pathname = event.Records[0]?.cf?.request?.uri ?? '';
   const nextHandlerPath = runtimeSettings.handlersPaths[pathname];
   if (nextHandlerPath === undefined) {
     return buildNotFoundResponse();

@@ -1,0 +1,44 @@
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+# cancel previous runs on the same PR
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
+name: ⛷ PR tests
+
+env:
+  CI: true
+  NODE_VERSION: 16
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build:
+    name: 🏗 Install Project
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Install & cache node dependencies
+        uses: ./.github/actions/install-node-deps
+
+  app-lint-and-tests:
+    name: 🏛 App Tests
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Run tests
+        uses: ./.github/actions/lint-and-tests
+        with:
+          path: packages/deployment

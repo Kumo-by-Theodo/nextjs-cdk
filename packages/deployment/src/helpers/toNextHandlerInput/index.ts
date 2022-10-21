@@ -1,4 +1,4 @@
-/* eslint-disable complexity */
+/* eslint-disable */
 import { CloudFrontRequest, CloudFrontResultResponse } from 'aws-lambda';
 import * as http from 'http';
 import { NextApiRequest, NextApiResponse } from 'next/types';
@@ -53,26 +53,25 @@ const toNextHandlerInput = (
 
   const headers = cfRequest.headers || {};
 
-  for (const lowercaseKey of Object.keys(headers)) {
-    const headerKeyValPairs = headers[lowercaseKey];
-
+  for (const [lowercaseKey, headerKeyValPairs] of Object.entries(headers)) {
     headerKeyValPairs.forEach(keyVal => {
       req.rawHeaders.push(keyVal.key as string);
       req.rawHeaders.push(keyVal.value);
     });
 
-    req.headers[lowercaseKey] = headerKeyValPairs[0].value;
+    // TODO: handle empty string case
+    req.headers[lowercaseKey] = headerKeyValPairs[0]?.value ?? '';
   }
-  //@ts-expect-error
+  //@ts-expect-error -- bad typing for NextApiRequest
   req.getHeader = (name: string) => {
     return req.headers[name.toLowerCase()];
   };
-  //@ts-expect-error
+  //@ts-expect-error -- bad typing for NextApiRequest
   req.getHeaders = () => {
     return req.headers;
   };
 
-  if (cfRequest.body && cfRequest.body.data) {
+  if (cfRequest.body?.data !== undefined) {
     req.push(cfRequest.body.data, cfRequest.body.encoding ? 'base64' : undefined);
   }
 
