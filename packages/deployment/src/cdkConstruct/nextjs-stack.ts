@@ -12,22 +12,22 @@ import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment';
 import { Construct } from 'constructs';
 import { join } from 'path';
 
-import { prepareApiHandler } from './apiLambda';
-import { prepareDefaultHandler } from './defaultLambda';
+import { getApiLambda } from './apiLambda';
+import { getDefaultLambda } from './defaultLambda';
 
 export class NextJSStack extends Stack {
   private mainNextBucket: Bucket;
   private nextCloudfront: Distribution;
   private defaultCachePolicy: CachePolicy;
-  private defaultHandler: NodejsFunction;
-  private apiHandler: NodejsFunction;
+  private defaultLambda: NodejsFunction;
+  private apiLambda: NodejsFunction;
 
   constructor(scope: Construct, id: string, private nextAppRoot: string, props?: StackProps) {
     super(scope, id, props);
 
-    this.defaultHandler = prepareDefaultHandler(this.nextAppRoot, this);
+    this.defaultLambda = getDefaultLambda(this.nextAppRoot, this);
 
-    this.apiHandler = prepareApiHandler(this.nextAppRoot, this);
+    this.apiLambda = getApiLambda(this.nextAppRoot, this);
 
     this.mainNextBucket = new Bucket(this, 'NextJSMainStorage', {
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
@@ -56,7 +56,7 @@ export class NextJSStack extends Stack {
         edgeLambdas: [
           {
             eventType: LambdaEdgeEventType.ORIGIN_REQUEST,
-            functionVersion: this.defaultHandler.currentVersion,
+            functionVersion: this.defaultLambda.currentVersion,
           },
         ],
       },
@@ -76,7 +76,7 @@ export class NextJSStack extends Stack {
       edgeLambdas: [
         {
           eventType: LambdaEdgeEventType.ORIGIN_REQUEST,
-          functionVersion: this.apiHandler.currentVersion,
+          functionVersion: this.apiLambda.currentVersion,
           includeBody: true,
         },
       ],

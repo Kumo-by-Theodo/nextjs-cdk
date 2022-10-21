@@ -14,7 +14,7 @@ import { createAPIRuntimeSettings } from 'runtimeSettings/api';
 
 const API_HANDLER_NAME = 'NextJSApi';
 
-export const prepareApiHandler = (nextAppRoot: string, scope: Construct): NodejsFunction => {
+export const getApiLambda = (nextAppRoot: string, scope: Construct): NodejsFunction => {
   const apiHandlerFolder = join(__dirname, '../../handlers/api');
   const runtimeData = createAPIRuntimeSettings(nextAppRoot);
 
@@ -22,15 +22,15 @@ export const prepareApiHandler = (nextAppRoot: string, scope: Construct): Nodejs
     entry: join(apiHandlerFolder, 'index.js'),
     logRetention: RetentionDays.ONE_DAY,
     bundling: {
-      externalModules: [RUNTIME_SETTINGS_FILE, './runtime/api/hello.js'],
+      externalModules: [RUNTIME_SETTINGS_FILE],
       commandHooks: {
         beforeInstall: () => [],
         afterBundling: () => [],
         beforeBundling: (_inputDir, outputDir) => {
-          const tmp_file = createFileInTempDir(runtimeData);
+          const temporaryFile = createFileInTempDir(runtimeData);
 
           return [
-            `mv ${tmp_file} ${outputDir}`,
+            `mv ${temporaryFile} ${outputDir}`,
             `mkdir -p ${join(outputDir, DEPENDENCY_FOLDER)}`,
             `cp -r ${getAPIHandlersFolder(nextAppRoot)} ${join(outputDir, DEPENDENCY_FOLDER)}`,
             `cp -r ${getNextChunkFolder(nextAppRoot)} ${join(outputDir, '/chunks')}`,

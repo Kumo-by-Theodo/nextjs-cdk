@@ -10,9 +10,8 @@ import {
 } from 'constants/nextPaths';
 import { PagesManifest, PrerenderManifest, RoutesManifest } from 'types/manifests';
 
-const requireNextManifest = (nextRoot: string, path: NextManifestPathsType): unknown => {
-  return require(join(nextRoot, path));
-};
+const requireNextManifest = (nextRoot: string, path: NextManifestPathsType): unknown =>
+  require(join(nextRoot, path));
 
 export const requirePageManifest = (nextRoot: string): PagesManifest =>
   requireNextManifest(nextRoot, NextManifestPaths.PAGES) as PagesManifest;
@@ -27,7 +26,7 @@ export const requireHandlerFromPath = (nextRoot: string): PagesManifest =>
   requireNextManifest(nextRoot, NextManifestPaths.PAGES) as PagesManifest;
 
 /**
- * Give the root of the next App, retrieves all static API paths and their
+ * Given the root of the next App, retrieves all static API paths and their
  * associated handler path. It is a filtered version of the PagesManisfest
  *
  * Example:

@@ -10,9 +10,12 @@ import { RUNTIME_SETTINGS_FILE } from 'constants/handlerPaths';
  *
  * `filename` defaults to RUNTIME_SETTINGS_FILE
  */
-export const createFileInTempDir = (data: unknown, filename = RUNTIME_SETTINGS_FILE): string => {
+export const createFileInTempDir = (
+  fileContent: unknown,
+  filename = RUNTIME_SETTINGS_FILE,
+): string => {
   const fullpath = join(tmpdir(), filename);
-  writeFileSync(fullpath, JSON.stringify(data));
+  writeFileSync(fullpath, JSON.stringify(fileContent));
 
   return fullpath;
 };

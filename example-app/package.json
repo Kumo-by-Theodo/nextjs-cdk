@@ -9,8 +9,10 @@
     "lint": "next lint",
     "test-type": "tsc --noEmit",
     "test-unit": "jest",
-    "bootstrap": "cdk bootstrap",
-    "deploy": "cdk deploy"
+    "package": "cd ../packages/deployment && yarn package && cd ../../example-app",
+    "bootstrap": "yarn cdk bootstrap --qualifier nextconst --toolkit-stack-name CDKToolkitMySLSNext",
+    "deploy": "yarn cdk deploy --toolkit-stack-name CDKToolkitMySLSNext --require-approval never",
+    "destroy": "yarn cdk destroy --require-approval never"
   },
   "dependencies": {
     "aws-cdk": "^2.44.0",

@@ -6,11 +6,11 @@ import { existsSync } from 'fs';
 import { join } from 'path';
 import { exit } from 'process';
 
-import { NextJSStack } from './lib/nextjs-stack';
+import { NextJSStack } from './cdkConstruct/nextjs-stack';
+
+const STACK_NAME = 'NextJSStack';
 
 export const createNextStack = (app: cdk.App, nextAppRoot: string): void => {
-  // const nextAppRoot = join(cwd(), '../../example-app');
-
   if (!existsSync(join(nextAppRoot, 'next.config.js'))) {
     console.error('next.config.js file not found... Aborting deploy');
     exit(1);
@@ -40,11 +40,11 @@ export const createNextStack = (app: cdk.App, nextAppRoot: string): void => {
         console.info('Next build completed');
         console.debug(stdout);
 
-        new NextJSStack(app, 'NextJSStack', nextAppRoot, {
+        new NextJSStack(app, STACK_NAME, nextAppRoot, {
           env: {
             region: 'us-east-1',
           },
-          synthesizer: new DefaultStackSynthesizer(),
+          synthesizer: new DefaultStackSynthesizer({ qualifier: 'nextconst' }),
         });
       }
     },

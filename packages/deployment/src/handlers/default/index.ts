@@ -2,9 +2,9 @@ import { CloudFrontRequest, CloudFrontRequestEvent, CloudFrontRequestHandler } f
 import { join } from 'path';
 
 import { RUNTIME_SETTINGS_FILE } from 'constants/handlerPaths';
+import { extractDynamicParams, matchParams } from 'helpers/dynamic';
+import { defaultRuntimeSettings } from 'types/runtimeSettings';
 
-import { extractDynamicParams, matchParams } from '../../helpers/dynamic';
-import { defaultRuntimeSettings } from '../../types/runtimeSettings';
 /**
  * Function triggered by Cloudfront as an origin request
  */

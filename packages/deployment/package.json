@@ -12,8 +12,6 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "bootstrap": "cdk bootstrap",
-    "deploy": "cdk deploy",
     "test-type": "tsc --noEmit",
     "test-unit": "jest",
     "package": "rm -rf dist && yarn package-cjs && yarn package-esm && yarn package-types",
@@ -43,7 +41,6 @@
     "next": "^12.3.0",
     "ts-jest": "^27.1.4",
     "ts-node": "^10.9.1",
-    "ttypescript": "^1.5.13",
     "typescript": "^4.8.3"
   },
   "dependencies": {
@@ -54,9 +51,6 @@
     "esbuild": "^0.15.10",
     "source-map-support": "^0.5.21"
   },
-  "bundledDependencies": [
-    "esbuild"
-  ],
   "nx": {
     "targets": {
       "package": {

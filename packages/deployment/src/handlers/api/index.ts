@@ -2,7 +2,7 @@
 import { CloudFrontRequestHandler } from 'aws-lambda';
 
 import { RUNTIME_SETTINGS_FILE } from 'constants/handlerPaths';
-import { buildNotFoundResponse } from 'helpers/cloudfront/response';
+import { buildNotFoundResponse } from 'helpers/cloudfront/buildNotFoundResponse';
 import { apiRuntimeSettings } from 'types/runtimeSettings';
 
 import toNextHandlerInput from '../../helpers/toNextHandlerInput';
@@ -23,13 +23,13 @@ export const handler: CloudFrontRequestHandler = async event => {
   const runtimeSettings = require(RUNTIME_SETTINGS_FILE) as apiRuntimeSettings;
 
   const pathname = event.Records[0].cf.request.uri;
-  const handlerPath = runtimeSettings.handlersPaths[pathname];
-  if (handlerPath === undefined) {
+  const nextHandlerPath = runtimeSettings.handlersPaths[pathname];
+  if (nextHandlerPath === undefined) {
     return buildNotFoundResponse();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-var-requires
-  require(handlerPath).default(req, res);
+  require(nextHandlerPath).default(req, res);
 
   return await responsePromise;
 };
