@@ -41,7 +41,7 @@ export const getNextAPIHandlers = (nextRoot: string): PagesManifest => {
   const pageManifest = requirePageManifest(nextRoot);
   const APIPaths = Object.keys(pageManifest).filter(path => path.startsWith(API_PATH_PREFIX));
 
-  return Object.fromEntries(APIPaths.map(path => [path, pageManifest[path]]));
+  return Object.fromEntries(APIPaths.map(path => [path, pageManifest[path] as string]));
 };
 
 /**

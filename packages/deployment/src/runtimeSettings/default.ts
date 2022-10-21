@@ -2,6 +2,7 @@ import { extractDynamicParams, filenameFromParams } from 'helpers/dynamic';
 import { defaultRuntimeSettings } from 'types/runtimeSettings';
 
 import {
+  Fallback,
   PagesManifest,
   ParamsMapping,
   PrerenderManifest,
@@ -18,7 +19,7 @@ export const createDefaultRuntimeSettings = (
     staticPages: Object.fromEntries(
       routesManifest.staticRoutes.map(staticRoute => [
         staticRoute.regex,
-        pagesManifest[staticRoute.page],
+        pagesManifest[staticRoute.page] as string,
       ]),
     ),
     publicFiles,
@@ -26,7 +27,7 @@ export const createDefaultRuntimeSettings = (
       routesManifest.dynamicRoutes.map(dynamicRoute => [
         dynamicRoute.regex,
         {
-          fallback: prerenderManifest.dynamicRoutes[dynamicRoute.page].fallback,
+          fallback: prerenderManifest.dynamicRoutes[dynamicRoute.page]?.fallback as Fallback,
           routeKeys: dynamicRoute.routeKeys,
           namedRegex: dynamicRoute.namedRegex,
           prerendered: Object.keys(prerenderManifest.routes)
@@ -37,7 +38,7 @@ export const createDefaultRuntimeSettings = (
             .map(dynamicParams => {
               const filename = filenameFromParams(
                 dynamicParams as ParamsMapping,
-                pagesManifest[dynamicRoute.page],
+                pagesManifest[dynamicRoute.page] as string,
               );
 
               return { params: dynamicParams as ParamsMapping, file: filename };

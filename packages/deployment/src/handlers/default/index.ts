@@ -12,7 +12,11 @@ import { defaultRuntimeSettings } from 'types/runtimeSettings';
 const handler: CloudFrontRequestHandler = (
   event: CloudFrontRequestEvent,
 ): Promise<CloudFrontRequest> => {
-  const request = event.Records[0].cf.request;
+  const request = event.Records[0]?.cf?.request;
+
+  if (request === undefined) {
+    throw new Error('Request is undefined');
+  }
 
   if (!request.uri.startsWith('/_next/')) {
     // Is an initial request (not a request by next in browser)
@@ -34,7 +38,7 @@ const handler: CloudFrontRequestHandler = (
      */
     for (const regex in manifest.staticPages) {
       if (new RegExp(regex, 'i').test(request.uri)) {
-        request.uri = join('/serverless', manifest.staticPages[regex]);
+        request.uri = join('/serverless', manifest.staticPages[regex] as string);
 
         return Promise.resolve(request);
       }
@@ -45,20 +49,21 @@ const handler: CloudFrontRequestHandler = (
      */
     for (const regex in manifest.dynamicPages) {
       if (!new RegExp(regex, 'i').test(request.uri)) continue;
-
+      // @ts-expect-error -- manifest.dynamicPages[regex] exists
       const params = extractDynamicParams(manifest.dynamicPages[regex].namedRegex, request.uri);
       if (params === null) continue;
-
+      // @ts-expect-error -- manifest.dynamicPages[regex] exists
       const matched = manifest.dynamicPages[regex].prerendered.filter(prerendered =>
         matchParams(
           prerendered.params,
           params,
+          // @ts-expect-error -- manifest.dynamicPages[regex] exists
           Object.keys(manifest.dynamicPages[regex].routeKeys),
         ),
       );
       if (matched.length !== 1) continue;
 
-      request.uri = join('/serverless', matched[0].file);
+      request.uri = join('/serverless', matched[0]?.file as string);
 
       return Promise.resolve(request);
     }

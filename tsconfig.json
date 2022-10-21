@@ -17,6 +17,8 @@
     "incremental": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "noUncheckedIndexedAccess": true,
+    "strictNullChecks": true,
     "sourceMap": true,
     "noImplicitReturns": true,
     "declaration": true,
