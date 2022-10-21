@@ -31,7 +31,7 @@ yarn package
 Deploy the example app in production mode (AWS serverless server)
 
 ```
-cd packages/deployment
+cd example-app
 yarn deploy
 ```
 
