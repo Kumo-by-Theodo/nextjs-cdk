@@ -21,6 +21,13 @@ yarn build
 yarn start
 ```
 
+Build the package `deployment`
+
+```
+cd packages/deployment
+yarn package
+```
+
 Deploy the example app in production mode (AWS serverless server)
 
 ```
