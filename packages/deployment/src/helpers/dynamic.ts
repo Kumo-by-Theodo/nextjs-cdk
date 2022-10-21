@@ -5,10 +5,10 @@ export const extractDynamicParams = (namedRegex: string, path: string): null | P
 
 export const filenameFromParams = (mapping: ParamsMapping, baseFile: string): string => {
   let prerenderedFile = baseFile;
-  Object.keys(mapping).forEach(key => {
+  Object.entries(mapping).forEach(([key, mappingValue]) => {
     prerenderedFile = prerenderedFile
-      .replace(`[${key}].js`, `${mapping[key]}.html`)
-      .replace(`/[${key}]/`, `/${mapping[key]}/`);
+      .replace(`[${key}].js`, `${mappingValue}.html`)
+      .replace(`/[${key}]/`, `/${mappingValue}/`);
   });
 
   return prerenderedFile;

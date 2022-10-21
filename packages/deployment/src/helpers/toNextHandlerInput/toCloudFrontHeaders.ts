@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { readOnlyCloudFrontHeaders } from './constants';
 
 type Headers = { [key: string]: string | string[] };

@@ -1,4 +1,4 @@
-/* eslint-disable complexity */
+/* eslint-disable */
 import { CloudFrontRequest, CloudFrontResultResponse } from 'aws-lambda';
 import * as http from 'http';
 import { NextApiRequest, NextApiResponse } from 'next/types';
