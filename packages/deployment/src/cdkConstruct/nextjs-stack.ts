@@ -10,7 +10,9 @@ import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { BlockPublicAccess, Bucket } from 'aws-cdk-lib/aws-s3';
 import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment';
 import { Construct } from 'constructs';
-import { join } from 'path';
+
+import { APP_PUBLIC_FILE_PATH, APP_SERVER_FILE_PATH } from 'constants/bucketPaths';
+import { getNextPublicFolder, getNextServerFolder, getNextStaticFolder } from 'helpers/nextImport';
 
 import { getApiLambda } from './apiLambda';
 import { getDefaultLambda } from './defaultLambda';
@@ -63,7 +65,7 @@ export class NextJSStack extends Stack {
       errorResponses: [
         {
           httpStatus: 500,
-          responsePagePath: '/serverless/pages/500.html',
+          responsePagePath: `/${APP_SERVER_FILE_PATH}/pages/500.html`,
         },
       ],
     });
@@ -85,16 +87,16 @@ export class NextJSStack extends Stack {
 
     new BucketDeployment(this, 'NextJSAssetsDeployment', {
       destinationBucket: this.mainNextBucket,
-      destinationKeyPrefix: 'serverless',
-      sources: [Source.asset(join(nextAppRoot, '.next/serverless'))],
+      destinationKeyPrefix: APP_SERVER_FILE_PATH,
+      sources: [Source.asset(getNextServerFolder(nextAppRoot))],
       distribution: this.nextCloudfront,
       distributionPaths: ['/*'],
     });
 
     new BucketDeployment(this, 'NextJSPublicDeployment', {
       destinationBucket: this.mainNextBucket,
-      destinationKeyPrefix: 'public',
-      sources: [Source.asset(join(nextAppRoot, 'public'))],
+      destinationKeyPrefix: APP_PUBLIC_FILE_PATH,
+      sources: [Source.asset(getNextPublicFolder(nextAppRoot))],
       distribution: this.nextCloudfront,
       distributionPaths: ['/*'],
     });
@@ -102,7 +104,7 @@ export class NextJSStack extends Stack {
     new BucketDeployment(this, 'NextJSStaticDeployment', {
       destinationBucket: this.mainNextBucket,
       destinationKeyPrefix: '_next/static',
-      sources: [Source.asset(join(nextAppRoot, '.next/static'))],
+      sources: [Source.asset(getNextStaticFolder(nextAppRoot))],
       distribution: this.nextCloudfront,
       distributionPaths: ['/_next/static/*'],
     });

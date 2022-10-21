@@ -83,6 +83,7 @@ module.exports = {
       },
     ],
     curly: ['error', 'all'],
+    '@typescript-eslint/no-non-null-assertion': 0,
   },
   root: true,
   env: {

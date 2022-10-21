@@ -3,7 +3,10 @@ import { join } from 'path';
 import {
   API_PATH_PREFIX,
   NEXT_API_HANDLERS_FOLDER,
+  NEXT_BUILD_SERVER_OUTDIR,
+  NEXT_BUILD_STATIC_DIR,
   NEXT_CHUNKS_FOLDER,
+  NEXT_PUBLIC_FOLDER,
   NEXT_WEBPACK_API_RUNTIME_FILE,
   NextManifestPaths,
   NextManifestPathsType,
@@ -45,18 +48,35 @@ export const getNextAPIHandlers = (nextRoot: string): PagesManifest => {
 };
 
 /**
- * Example output : `.next/serverless/chunks`
+ * Example output : `<>/public`
+ */
+export const getNextPublicFolder = (nextRoot: string): string => join(nextRoot, NEXT_PUBLIC_FOLDER);
+
+/**
+ * Example output : `<>/.next/server`
+ */
+export const getNextServerFolder = (nextRoot: string): string =>
+  join(nextRoot, NEXT_BUILD_SERVER_OUTDIR);
+
+/**
+ * Example output : `<>/.next/static`
+ */
+export const getNextStaticFolder = (nextRoot: string): string =>
+  join(nextRoot, NEXT_BUILD_STATIC_DIR);
+
+/**
+ * Example output : `<>/.next/server/chunks`
  */
 export const getNextChunkFolder = (nextRoot: string): string => join(nextRoot, NEXT_CHUNKS_FOLDER);
 
 /**
- * Example output : `.next/serverless/pages/api`
+ * Example output : `<>/.next/server/pages/api`
  */
 export const getAPIHandlersFolder = (nextRoot: string): string =>
   join(nextRoot, NEXT_API_HANDLERS_FOLDER);
 
 /**
- * Example output : `.next/serverless/webpack-api-runtime`
+ * Example output : `<>/.next/server/webpack-api-runtime`
  */
 export const getWebpackApiRuntimeFile = (nextRoot: string): string =>
   join(nextRoot, NEXT_WEBPACK_API_RUNTIME_FILE);

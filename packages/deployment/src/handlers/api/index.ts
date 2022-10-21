@@ -6,6 +6,7 @@ import { buildNotFoundResponse } from 'helpers/cloudfront/buildNotFoundResponse'
 import { apiRuntimeSettings } from 'types/runtimeSettings';
 
 import toNextHandlerInput from '../../helpers/toNextHandlerInput';
+
 /**
  * Function triggered by Cloudfront as an origin request
  */

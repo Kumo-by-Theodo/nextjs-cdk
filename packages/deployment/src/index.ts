@@ -20,8 +20,8 @@ export const createNextStack = (app: cdk.App, nextAppRoot: string): void => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-var-requires
     const nextConfig = require(join(nextAppRoot, 'next.config.js'));
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    if (nextConfig.target !== 'serverless') {
-      console.error('Please set your next target to `serverless` before attempting a deploy');
+    if (nextConfig.target !== undefined) {
+      console.error('Please unset any next target in your `next.config.js`');
       exit(1);
     }
   } catch (e) {
