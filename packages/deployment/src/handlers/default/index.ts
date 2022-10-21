@@ -18,62 +18,61 @@ const handler: CloudFrontRequestHandler = (
     throw new Error('Request is undefined');
   }
 
-  if (!request.uri.startsWith('/_next/')) {
-    // Is an initial request (not a request by next in browser)
+  // Request by next in browser
+  if (request.uri.startsWith('/_next/')) {
+    return Promise.resolve(request);
+  }
 
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const manifest = require(RUNTIME_SETTINGS_FILE) as defaultRuntimeSettings;
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const manifest = require(RUNTIME_SETTINGS_FILE) as defaultRuntimeSettings;
 
-    /**
-     * If URI matches a known public files, serve this file
-     */
-    if (manifest.publicFiles.includes(request.uri)) {
-      request.uri = join('/public', request.uri);
-
-      return Promise.resolve(request);
-    }
-
-    /**
-     * If URI matches a static page, serve the static file
-     */
-    for (const regex in manifest.staticPages) {
-      if (new RegExp(regex, 'i').test(request.uri)) {
-        request.uri = join('/serverless', manifest.staticPages[regex] as string);
-
-        return Promise.resolve(request);
-      }
-    }
-
-    /**
-     * If URI matches a static page with dynamic URI, serve the static file
-     */
-    for (const regex in manifest.dynamicPages) {
-      if (!new RegExp(regex, 'i').test(request.uri)) continue;
-      // @ts-expect-error -- manifest.dynamicPages[regex] exists
-      const params = extractDynamicParams(manifest.dynamicPages[regex].namedRegex, request.uri);
-      if (params === null) continue;
-      // @ts-expect-error -- manifest.dynamicPages[regex] exists
-      const matched = manifest.dynamicPages[regex].prerendered.filter(prerendered =>
-        matchParams(
-          prerendered.params,
-          params,
-          // @ts-expect-error -- manifest.dynamicPages[regex] exists
-          Object.keys(manifest.dynamicPages[regex].routeKeys),
-        ),
-      );
-      if (matched.length !== 1) continue;
-
-      request.uri = join('/serverless', matched[0]?.file as string);
-
-      return Promise.resolve(request);
-    }
-
-    request.uri = join('/serverless', manifest.notFound);
+  /**
+   * If URI matches a known public files, serve this file
+   */
+  if (manifest.publicFiles.includes(request.uri)) {
+    request.uri = join('/public', request.uri);
 
     return Promise.resolve(request);
   }
 
+  /**
+   * If URI matches a static page, serve the static file
+   */
+  for (const regex in manifest.staticPages) {
+    if (new RegExp(regex, 'i').test(request.uri)) {
+      request.uri = join('/serverless', manifest.staticPages[regex] as string);
+
+      return Promise.resolve(request);
+    }
+  }
+
+  /**
+   * If URI matches a static page with dynamic URI, serve the static file
+   */
+  for (const regex in manifest.dynamicPages) {
+    if (!new RegExp(regex, 'i').test(request.uri)) continue;
+    // @ts-expect-error -- manifest.dynamicPages[regex] exists
+    const params = extractDynamicParams(manifest.dynamicPages[regex].namedRegex, request.uri);
+    if (params === null) continue;
+    // @ts-expect-error -- manifest.dynamicPages[regex] exists
+    const matched = manifest.dynamicPages[regex].prerendered.filter(prerendered =>
+      matchParams(
+        prerendered.params,
+        params,
+        // @ts-expect-error -- manifest.dynamicPages[regex] exists
+        Object.keys(manifest.dynamicPages[regex].routeKeys),
+      ),
+    );
+    if (matched.length !== 1) continue;
+
+    request.uri = join('/serverless', matched[0]?.file as string);
+
+    return Promise.resolve(request);
+  }
+
+  request.uri = join('/serverless', manifest.notFound);
+
   return Promise.resolve(request);
 };
 
-module.exports = { handler };
+export { handler };
