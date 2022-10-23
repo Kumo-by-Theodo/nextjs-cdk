@@ -1,42 +1,39 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
-import { CloudFrontRequestHandler } from 'aws-lambda';
+import { CloudFrontRequestEventRecord, CloudFrontRequestHandler } from 'aws-lambda';
+import { apiResolver } from 'next/dist/server/api-utils/node';
 
 import { RUNTIME_SETTINGS_FILE } from 'constants/handlerPaths';
+import { CustomIncomingMessage } from 'helpers/cloudfront/CustomIncomingMessage';
+import { CustomServerResponse } from 'helpers/cloudfront/CustomServerResponse';
 import { buildNotFoundResponse } from 'helpers/cloudfront/buildNotFoundResponse';
 import { apiRuntimeSettings } from 'types/runtimeSettings';
-
-import toNextHandlerInput from '../../helpers/toNextHandlerInput';
 
 /**
  * Function triggered by Cloudfront as an origin request
  */
 export const handler: CloudFrontRequestHandler = async event => {
-  const { req, res, responsePromise } = toNextHandlerInput(
-    //@ts-expect-error to do: improve typing
-    event.Records[0].cf,
-    {
-      enableHTTPCompression: false,
-      rewrittenUri: undefined,
-    },
-  );
-
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-var-requires
   const runtimeSettings = require(RUNTIME_SETTINGS_FILE) as apiRuntimeSettings;
 
   const pathname = event.Records[0]?.cf?.request?.uri ?? '';
-  const nextHandlerPath = runtimeSettings.handlersPaths[pathname];
-  if (nextHandlerPath === undefined) {
+  const nextApiHandlerPath = runtimeSettings.handlersPaths[pathname];
+  if (nextApiHandlerPath === undefined) {
     return buildNotFoundResponse();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-var-requires
-  require(nextHandlerPath).default(req, res);
+  const req = new CustomIncomingMessage(
+    (event.Records[0] as CloudFrontRequestEventRecord).cf.request,
+  );
+  const res = new CustomServerResponse();
+  await apiResolver(
+    req,
+    res,
+    undefined,
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    require(nextApiHandlerPath),
+    { previewModeId: '', previewModeSigningKey: '', previewModeEncryptionKey: '' },
+    true,
+  );
 
-  return await responsePromise;
+  return await res.finishedPromise;
 };
-
-/**
- * How is handled an api on Next's side :
- * https://github.com/vercel/next.js/blob/canary/packages/next/server/next-server.ts#L747
- *
- */

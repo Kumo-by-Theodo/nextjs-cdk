@@ -35,7 +35,7 @@ describe('handler', () => {
 
     await expect(
       handler({ Records: [cloudFrontEvent] }, mockEmptyContext, mockVoidCallback),
-    ).resolves.toEqual({ ...cloudFrontEvent.cf.request, uri: '/serverless/pages/404.html' });
+    ).resolves.toEqual({ ...cloudFrontEvent.cf.request, uri: '/server/pages/404.html' });
   });
 
   it('should resolve the request to a public uri', async () => {
@@ -58,6 +58,6 @@ describe('handler', () => {
 
     await expect(
       handler({ Records: [cloudFrontEvent] }, mockEmptyContext, mockVoidCallback),
-    ).resolves.toEqual({ ...cloudFrontEvent.cf.request, uri: '/serverless/pages/index.html' });
+    ).resolves.toEqual({ ...cloudFrontEvent.cf.request, uri: '/server/pages/index.html' });
   });
 });

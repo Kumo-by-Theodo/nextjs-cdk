@@ -44,7 +44,7 @@ export const createNextStack = (app: cdk.App, nextAppRoot: string): void => {
           env: {
             region: 'us-east-1',
           },
-          synthesizer: new DefaultStackSynthesizer({ qualifier: 'nextconst' }),
+          synthesizer: new DefaultStackSynthesizer({ qualifier: process.env.NEXT_STACK_QUALIFIER }),
         });
       }
     },

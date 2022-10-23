@@ -18,18 +18,18 @@ export const specialNodeHeaders: string[] = [
   'user-agent',
 ];
 
-export const readOnlyCloudFrontHeaders: Record<string, boolean> = {
-  'accept-encoding': true,
-  'content-length': true,
-  'if-modified-since': true,
-  'if-none-match': true,
-  'if-range': true,
-  'if-unmodified-since': true,
-  'transfer-encoding': true,
-  via: true,
-};
+export const readOnlyCloudFrontHeaders: readonly string[] = [
+  'accept-encoding',
+  'content-length',
+  'if-modified-since',
+  'if-none-match',
+  'if-range',
+  'if-unmodified-since',
+  'transfer-encoding',
+  'via',
+] as const;
 
-export const HttpStatusCodes: Record<number, string> = {
+export const StatusMessageMapping: Record<number, string> = {
   202: 'Accepted',
   502: 'Bad Gateway',
   400: 'Bad Request',
