@@ -13,6 +13,8 @@ import {
 } from 'constants/nextPaths';
 import { PagesManifest, PrerenderManifest, RoutesManifest } from 'types/manifests';
 
+import { getDepenciesFromHandlerPath } from './nft';
+
 const requireNextManifest = (nextRoot: string, path: NextManifestPathsType): unknown =>
   require(join(nextRoot, path));
 
@@ -45,6 +47,20 @@ export const getNextAPIHandlers = (nextRoot: string): PagesManifest => {
   const APIPaths = Object.keys(pageManifest).filter(path => path.startsWith(API_PATH_PREFIX));
 
   return Object.fromEntries(APIPaths.map(path => [path, pageManifest[path] as string]));
+};
+
+/**
+ * Uses Next's file tracing .nft.json file to retrieved all used packages.
+ * Returns a list of packages names, the version will be automatically deduced
+ * by aws CDK with the Next's App root folder `package.json`
+ */
+export const getNextAPITracedPackages = (nextRoot: string): string[] => {
+  const rootFolder = getNextServerFolder(nextRoot);
+  const depencies = Object.values(getNextAPIHandlers(nextRoot))
+    .map(handlerPath => getDepenciesFromHandlerPath(join(rootFolder, handlerPath)))
+    .flat();
+
+  return Array.from(new Set(depencies));
 };
 
 /**
