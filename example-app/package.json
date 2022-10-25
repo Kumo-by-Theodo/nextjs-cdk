@@ -18,12 +18,14 @@
     "aws-cdk": "^2.44.0",
     "aws-cdk-lib": "^2.44.0",
     "esbuild": "^0.15.10",
+    "gravatar": "^1.8.2",
     "next": "12.3.0",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
   "devDependencies": {
     "@cdk-sls-nextjs/lib": "workspace:^",
+    "@types/gravatar": "^1.8.3",
     "@types/node": "18.7.16",
     "@types/react": "18.0.18",
     "@types/react-dom": "18.0.6",

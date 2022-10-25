@@ -6,6 +6,7 @@ import { join } from 'path';
 import { DEPENDENCY_FOLDER, RUNTIME_SETTINGS_FILE } from 'constants/handlerPaths';
 import {
   getAPIHandlersFolder,
+  getNextAPITracedPackages,
   getNextChunkFolder,
   getWebpackApiRuntimeFile,
 } from 'helpers/nextImport';
@@ -18,11 +19,14 @@ export const getApiLambda = (nextAppRoot: string, scope: Construct): NodejsFunct
   const apiHandlerFolder = join(__dirname, '../../handlers/api');
   const runtimeData = createAPIRuntimeSettings(nextAppRoot);
 
+  const packages = getNextAPITracedPackages(nextAppRoot);
+
   return new NodejsFunction(scope, API_HANDLER_NAME, {
     entry: join(apiHandlerFolder, 'index.js'),
     logRetention: RetentionDays.ONE_DAY,
     bundling: {
       externalModules: [RUNTIME_SETTINGS_FILE],
+      nodeModules: packages,
       commandHooks: {
         beforeInstall: () => [],
         afterBundling: () => [],

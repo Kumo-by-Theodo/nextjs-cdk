@@ -2,7 +2,9 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  target: 'serverless',
+  experimental: {
+    outputFileTracingRoot: '../',
+  },
 };
 
 module.exports = nextConfig;

@@ -5,6 +5,7 @@ import { existsSync, readdirSync } from 'fs';
 import { join } from 'path';
 
 import { RUNTIME_SETTINGS_FILE } from 'constants/handlerPaths';
+import { NEXT_PUBLIC_FOLDER } from 'constants/nextPaths';
 import {
   requirePageManifest,
   requirePreRenderManifest,
@@ -22,7 +23,7 @@ export const getDefaultLambda = (nextAppRoot: string, scope: Construct): NodejsF
   const routesManifest = requireRoutesManifest(nextAppRoot);
   const prerenderManifest = requirePreRenderManifest(nextAppRoot);
 
-  const publicFolder = join(nextAppRoot, 'public');
+  const publicFolder = join(nextAppRoot, NEXT_PUBLIC_FOLDER);
   const publicFiles = existsSync(publicFolder) ? listFiles(publicFolder) : [];
 
   const runtimeData = createDefaultRuntimeSettings(
