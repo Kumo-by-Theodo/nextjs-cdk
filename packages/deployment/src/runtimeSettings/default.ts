@@ -1,13 +1,12 @@
 import { extractDynamicParams, filenameFromParams } from 'helpers/dynamic';
-import { defaultRuntimeSettings } from 'types/runtimeSettings';
-
 import {
   Fallback,
   PagesManifest,
   ParamsMapping,
   PrerenderManifest,
   RoutesManifest,
-} from '../types/manifests';
+} from 'types/manifests';
+import { defaultRuntimeSettings } from 'types/runtimeSettings';
 
 export const createDefaultRuntimeSettings = (
   pagesManifest: PagesManifest,

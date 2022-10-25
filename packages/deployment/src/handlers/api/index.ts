@@ -3,10 +3,12 @@ import { CloudFrontRequestEventRecord, CloudFrontRequestHandler } from 'aws-lamb
 import { apiResolver } from 'next/dist/server/api-utils/node';
 import { URLSearchParams } from 'url';
 
-import { RUNTIME_SETTINGS_FILE } from 'constants/handlerPaths';
-import { CustomIncomingMessage } from 'helpers/cloudfront/CustomIncomingMessage';
-import { CustomServerResponse } from 'helpers/cloudfront/CustomServerResponse';
-import { buildNotFoundResponse } from 'helpers/cloudfront/buildNotFoundResponse';
+import { RUNTIME_SETTINGS_FILE } from 'constants/paths';
+import {
+  buildNotFoundResponse,
+  CustomIncomingMessage,
+  CustomServerResponse,
+} from 'helpers/cloudfront';
 import { apiRuntimeSettings } from 'types/runtimeSettings';
 
 const PROPAGATE_ERROR = true;

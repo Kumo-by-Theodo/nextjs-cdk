@@ -2,7 +2,7 @@ import { writeFileSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
 
-import { RUNTIME_SETTINGS_FILE } from 'constants/handlerPaths';
+import { RUNTIME_SETTINGS_FILE } from 'constants/paths';
 
 /**
  * From a given serializable data, creates a file in a
@@ -10,7 +10,7 @@ import { RUNTIME_SETTINGS_FILE } from 'constants/handlerPaths';
  *
  * `filename` defaults to RUNTIME_SETTINGS_FILE
  */
-export const createFileInTempDir = (
+export const createRuntimeSettingsFile = (
   fileContent: unknown,
   filename = RUNTIME_SETTINGS_FILE,
 ): string => {
