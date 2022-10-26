@@ -4,14 +4,13 @@ import { Construct } from 'constructs';
 import { existsSync, readdirSync } from 'fs';
 import { join } from 'path';
 
-import { RUNTIME_SETTINGS_FILE } from 'constants/handlerPaths';
-import { NEXT_PUBLIC_FOLDER } from 'constants/nextPaths';
+import { NEXT_PUBLIC_FOLDER, RUNTIME_SETTINGS_FILE } from 'constants/paths';
+import { createRuntimeSettingsFile } from 'helpers/createRuntimeSettingsFile';
 import {
   requirePageManifest,
   requirePreRenderManifest,
   requireRoutesManifest,
 } from 'helpers/nextImport';
-import { createFileInTempDir } from 'runtimeSettings';
 import { createDefaultRuntimeSettings } from 'runtimeSettings/default';
 
 const DEFAULT_LAMBDA_NAME = 'NextJSDefault';
@@ -41,9 +40,9 @@ export const getDefaultLambda = (nextAppRoot: string, scope: Construct): NodejsF
       commandHooks: {
         beforeInstall: () => [],
         beforeBundling: (_, outputDir) => {
-          const tmp_file = createFileInTempDir(runtimeData);
+          const temporaryFile = createRuntimeSettingsFile(runtimeData);
 
-          return [`mv ${tmp_file} ${outputDir}`];
+          return [`mv ${temporaryFile} ${outputDir}`];
         },
         afterBundling: () => [],
       },

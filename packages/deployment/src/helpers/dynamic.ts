@@ -1,4 +1,4 @@
-import { ParamsMapping } from '../types/manifests';
+import { ParamsMapping } from 'types/manifests';
 
 export const extractDynamicParams = (namedRegex: string, path: string): null | ParamsMapping =>
   new RegExp(namedRegex, 'i').exec(path)?.groups ?? null;

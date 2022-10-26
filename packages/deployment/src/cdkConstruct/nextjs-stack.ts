@@ -11,7 +11,7 @@ import { BlockPublicAccess, Bucket } from 'aws-cdk-lib/aws-s3';
 import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment';
 import { Construct } from 'constructs';
 
-import { APP_PUBLIC_FILE_PATH, APP_SERVER_FILE_PATH } from 'constants/bucketPaths';
+import { APP_PUBLIC_FILE_PATH, APP_SERVER_FILE_PATH } from 'constants/paths';
 import { getNextPublicFolder, getNextServerFolder, getNextStaticFolder } from 'helpers/nextImport';
 
 import { getApiLambda } from './apiLambda';

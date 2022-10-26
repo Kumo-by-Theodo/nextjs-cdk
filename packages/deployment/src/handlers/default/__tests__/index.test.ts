@@ -6,8 +6,10 @@ const mockEmptyContext = {} as Context;
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 const mockVoidCallback = (() => {}) as Callback;
 
-jest.mock('constants/handlerPaths', () => ({
+jest.mock('constants/paths', () => ({
   RUNTIME_SETTINGS_FILE: './__tests__/mock-runtime-settings.json',
+  APP_SERVER_FILE_PATH: 'server',
+  APP_PUBLIC_FILE_PATH: 'public',
 }));
 
 describe('handler', () => {

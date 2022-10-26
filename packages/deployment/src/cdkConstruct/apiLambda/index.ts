@@ -3,14 +3,14 @@ import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { Construct } from 'constructs';
 import { join } from 'path';
 
-import { DEPENDENCY_FOLDER, RUNTIME_SETTINGS_FILE } from 'constants/handlerPaths';
+import { DEPENDENCY_FOLDER, RUNTIME_SETTINGS_FILE } from 'constants/paths/handlerPaths';
+import { createRuntimeSettingsFile } from 'helpers/createRuntimeSettingsFile';
 import {
   getAPIHandlersFolder,
   getNextAPITracedPackages,
   getNextChunkFolder,
   getWebpackApiRuntimeFile,
 } from 'helpers/nextImport';
-import { createFileInTempDir } from 'runtimeSettings';
 import { createAPIRuntimeSettings } from 'runtimeSettings/api';
 
 const API_HANDLER_NAME = 'NextJSApi';
@@ -31,7 +31,7 @@ export const getApiLambda = (nextAppRoot: string, scope: Construct): NodejsFunct
         beforeInstall: () => [],
         afterBundling: () => [],
         beforeBundling: (_inputDir, outputDir) => {
-          const temporaryFile = createFileInTempDir(runtimeData);
+          const temporaryFile = createRuntimeSettingsFile(runtimeData);
 
           return [
             `mv ${temporaryFile} ${outputDir}`,

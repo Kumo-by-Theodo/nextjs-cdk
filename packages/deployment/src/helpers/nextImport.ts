@@ -10,7 +10,7 @@ import {
   NEXT_WEBPACK_API_RUNTIME_FILE,
   NextManifestPaths,
   NextManifestPathsType,
-} from 'constants/nextPaths';
+} from 'constants/paths';
 import { PagesManifest, PrerenderManifest, RoutesManifest } from 'types/manifests';
 
 import { getDepenciesFromHandlerPath } from './nft';

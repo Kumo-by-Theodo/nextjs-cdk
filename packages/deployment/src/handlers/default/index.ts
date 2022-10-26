@@ -6,8 +6,7 @@ import {
 } from 'aws-lambda';
 import { join } from 'path';
 
-import { APP_PUBLIC_FILE_PATH, APP_SERVER_FILE_PATH } from 'constants/bucketPaths';
-import { RUNTIME_SETTINGS_FILE } from 'constants/handlerPaths';
+import { APP_PUBLIC_FILE_PATH, APP_SERVER_FILE_PATH, RUNTIME_SETTINGS_FILE } from 'constants/paths';
 import { extractDynamicParams, matchParams } from 'helpers/dynamic';
 import { defaultRuntimeSettings, DynamicPageEntry, PrerenderedEntry } from 'types/runtimeSettings';
 
@@ -69,7 +68,6 @@ const handler: CloudFrontRequestHandler = (
         ),
     );
     if (matched.length !== 1) continue;
-
     request.uri = join('/', APP_SERVER_FILE_PATH, (matched[0] as PrerenderedEntry).file);
 
     return Promise.resolve(request);
