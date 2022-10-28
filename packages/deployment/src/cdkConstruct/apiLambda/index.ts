@@ -1,25 +1,30 @@
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
-import { Construct } from 'constructs';
-import { join } from 'path';
-
 import { DEPENDENCY_FOLDER, RUNTIME_SETTINGS_FILE } from 'constants/paths/handlerPaths';
+import { Construct } from 'constructs';
 import { createRuntimeSettingsFile } from 'helpers/createRuntimeSettingsFile';
 import {
   getAPIHandlersFolder,
   getNextAPITracedPackages,
   getNextChunkFolder,
+  getNextServerFolder,
   getWebpackApiRuntimeFile,
+  requirePageManifest,
+  requireRoutesManifest,
 } from 'helpers/nextImport';
+import { join } from 'path';
 import { createAPIRuntimeSettings } from 'runtimeSettings/api';
 
 const API_HANDLER_NAME = 'NextJSApi';
 
 export const getApiLambda = (nextAppRoot: string, scope: Construct): NodejsFunction => {
   const apiHandlerFolder = join(__dirname, '../../handlers/api');
-  const runtimeData = createAPIRuntimeSettings(nextAppRoot);
 
-  const packages = getNextAPITracedPackages(nextAppRoot);
+  const pagesManifest = requirePageManifest(nextAppRoot);
+  const routesManifest = requireRoutesManifest(nextAppRoot);
+  const runtimeData = createAPIRuntimeSettings(pagesManifest, routesManifest);
+
+  const packages = getNextAPITracedPackages(pagesManifest, getNextServerFolder(nextAppRoot));
 
   return new NodejsFunction(scope, API_HANDLER_NAME, {
     entry: join(apiHandlerFolder, 'index.js'),
