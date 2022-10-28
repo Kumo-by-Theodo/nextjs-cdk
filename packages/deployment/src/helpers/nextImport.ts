@@ -39,6 +39,8 @@ export const requireHandlerFromPath = (nextRoot: string): PagesManifest =>
  * {
  *   "/api/hello": "pages/api/hello.js",
  *   "/api/bye": "pages/api/bye.js"
+ *   "/api/[...slug]": "pages/api/[...slug].js",
+ *   "/api/[id]": "pages/api/[id].js",
  * }
  * ```
  */

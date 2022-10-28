@@ -1,7 +1,9 @@
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
-import { DEPENDENCY_FOLDER, RUNTIME_SETTINGS_FILE } from 'constants/paths/handlerPaths';
 import { Construct } from 'constructs';
+import { join } from 'path';
+
+import { DEPENDENCY_FOLDER, RUNTIME_SETTINGS_FILE } from 'constants/paths/handlerPaths';
 import { createRuntimeSettingsFile } from 'helpers/createRuntimeSettingsFile';
 import {
   getAPIHandlersFolder,
@@ -12,7 +14,6 @@ import {
   requirePageManifest,
   requireRoutesManifest,
 } from 'helpers/nextImport';
-import { join } from 'path';
 import { createAPIRuntimeSettings } from 'runtimeSettings/api';
 
 const API_HANDLER_NAME = 'NextJSApi';
