@@ -21,7 +21,9 @@ export const handler: CloudFrontRequestHandler = async event => {
   const runtimeSettings = require(RUNTIME_SETTINGS_FILE) as apiRuntimeSettings;
 
   const pathname = event.Records[0]?.cf?.request?.uri ?? '';
-  const nextApiHandlerPath = runtimeSettings.handlersPaths[pathname];
+
+  const nextApiHandlerPath = runtimeSettings.staticApiPaths[pathname];
+
   if (nextApiHandlerPath === undefined) {
     return buildNotFoundResponse();
   }
