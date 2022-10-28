@@ -17,7 +17,7 @@ import { getNextPublicFolder, getNextServerFolder, getNextStaticFolder } from 'h
 import { getApiLambda } from './apiLambda';
 import { getDefaultLambda } from './defaultLambda';
 
-export class NextJSStack extends Stack {
+export default class NextJSStack extends Stack {
   private mainNextBucket: Bucket;
   private nextCloudfront: Distribution;
   private defaultCachePolicy: CachePolicy;

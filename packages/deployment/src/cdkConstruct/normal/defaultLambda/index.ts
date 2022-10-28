@@ -16,7 +16,7 @@ import { createDefaultRuntimeSettings } from 'runtimeSettings/default';
 const DEFAULT_LAMBDA_NAME = 'NextJSDefault';
 
 export const getDefaultLambda = (nextAppRoot: string, scope: Construct): NodejsFunction => {
-  const defaultHandlerFolder = join(__dirname, '../../handlers/default');
+  const defaultHandlerFolder = join(__dirname, '../../../handlers/normal/default');
 
   const pagesManifest = requirePageManifest(nextAppRoot);
   const routesManifest = requireRoutesManifest(nextAppRoot);

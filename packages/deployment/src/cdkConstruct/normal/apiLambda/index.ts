@@ -16,7 +16,7 @@ import { createAPIRuntimeSettings } from 'runtimeSettings/api';
 const API_HANDLER_NAME = 'NextJSApi';
 
 export const getApiLambda = (nextAppRoot: string, scope: Construct): NodejsFunction => {
-  const apiHandlerFolder = join(__dirname, '../../handlers/api');
+  const apiHandlerFolder = join(__dirname, '../../../handlers/normal/api');
   const runtimeData = createAPIRuntimeSettings(nextAppRoot);
 
   const packages = getNextAPITracedPackages(nextAppRoot);

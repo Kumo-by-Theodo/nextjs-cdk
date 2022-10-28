@@ -4,4 +4,6 @@ import { cwd } from 'process';
 
 const app = new cdk.App();
 
-createNextStack(app, cwd());
+createNextStack(app, cwd(), {
+  deployAtEdge: false,
+});

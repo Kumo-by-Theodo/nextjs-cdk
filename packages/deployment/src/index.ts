@@ -6,11 +6,21 @@ import { existsSync } from 'fs';
 import { join } from 'path';
 import { exit } from 'process';
 
-import { NextJSStack } from './cdkConstruct/nextjs-stack';
+import NextEdgeStack from './cdkConstruct/edge';
+import NextNormalStack from './cdkConstruct/normal';
 
-const STACK_NAME = 'NextJSStack';
+const DEFAULT_STACK_NAME = 'NextJSStack';
 
-export const createNextStack = (app: cdk.App, nextAppRoot: string): void => {
+type createNextStackOptions = {
+  stackName?: string;
+  deployAtEdge?: boolean;
+};
+
+export const createNextStack = (
+  app: cdk.App,
+  nextAppRoot: string,
+  { deployAtEdge = true, stackName = DEFAULT_STACK_NAME }: createNextStackOptions,
+): void => {
   if (!existsSync(join(nextAppRoot, 'next.config.js'))) {
     console.error('next.config.js file not found... Aborting deploy');
     exit(1);
@@ -40,12 +50,24 @@ export const createNextStack = (app: cdk.App, nextAppRoot: string): void => {
         console.info('Next build completed');
         console.debug(stdout);
 
-        new NextJSStack(app, STACK_NAME, nextAppRoot, {
-          env: {
-            region: 'us-east-1',
-          },
-          synthesizer: new DefaultStackSynthesizer({ qualifier: process.env.NEXT_STACK_QUALIFIER }),
-        });
+        if (deployAtEdge)
+          new NextEdgeStack(app, stackName, nextAppRoot, {
+            env: {
+              region: 'us-east-1',
+            },
+            synthesizer: new DefaultStackSynthesizer({
+              qualifier: process.env.NEXT_STACK_QUALIFIER,
+            }),
+          });
+        else
+          new NextNormalStack(app, stackName, nextAppRoot, {
+            env: {
+              region: 'us-east-1',
+            },
+            synthesizer: new DefaultStackSynthesizer({
+              qualifier: process.env.NEXT_STACK_QUALIFIER,
+            }),
+          });
       }
     },
   );
