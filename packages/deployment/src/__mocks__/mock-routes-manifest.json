@@ -1,0 +1,59 @@
+{
+  "version": 3,
+  "pages404": true,
+  "basePath": "",
+  "redirects": [
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
+      "internal": true,
+      "statusCode": 308,
+      "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$"
+    }
+  ],
+  "headers": [],
+  "dynamicRoutes": [
+    {
+      "page": "/api/toto/[id]",
+      "regex": "^/api/toto/([^/]+?)(?:/)?$",
+      "routeKeys": { "id": "id" },
+      "namedRegex": "^/api/toto/(?<id>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/dyn/[slug]",
+      "regex": "^/dyn/([^/]+?)(?:/)?$",
+      "routeKeys": { "slug": "slug" },
+      "namedRegex": "^/dyn/(?<slug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/multi/[dan]/[slug]",
+      "regex": "^/multi/([^/]+?)/([^/]+?)(?:/)?$",
+      "routeKeys": { "dan": "dan", "slug": "slug" },
+      "namedRegex": "^/multi/(?<dan>[^/]+?)/(?<slug>[^/]+?)(?:/)?$"
+    }
+  ],
+  "staticRoutes": [
+    { "page": "/", "regex": "^/(?:/)?$", "routeKeys": {}, "namedRegex": "^/(?:/)?$" },
+    {
+      "page": "/index2",
+      "regex": "^/index2(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/index2(?:/)?$"
+    }
+  ],
+  "dataRoutes": [
+    {
+      "page": "/dyn/[slug]",
+      "routeKeys": { "slug": "slug" },
+      "dataRouteRegex": "^/_next/data/BE_qFMM1Keqwqi1Fqw1yA/dyn/([^/]+?)\\.json$",
+      "namedDataRouteRegex": "^/_next/data/BE_qFMM1Keqwqi1Fqw1yA/dyn/(?<slug>[^/]+?)\\.json$"
+    },
+    {
+      "page": "/multi/[dan]/[slug]",
+      "routeKeys": { "dan": "dan", "slug": "slug" },
+      "dataRouteRegex": "^/_next/data/BE_qFMM1Keqwqi1Fqw1yA/multi/([^/]+?)/([^/]+?)\\.json$",
+      "namedDataRouteRegex": "^/_next/data/BE_qFMM1Keqwqi1Fqw1yA/multi/(?<dan>[^/]+?)/(?<slug>[^/]+?)\\.json$"
+    }
+  ],
+  "rewrites": []
+}
