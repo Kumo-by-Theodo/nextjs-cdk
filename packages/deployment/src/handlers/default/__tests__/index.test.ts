@@ -7,7 +7,7 @@ const mockEmptyContext = {} as Context;
 const mockVoidCallback = (() => {}) as Callback;
 
 jest.mock('constants/paths', () => ({
-  RUNTIME_SETTINGS_FILE: './__tests__/mock-runtime-settings.json',
+  RUNTIME_SETTINGS_FILE: '../../__mocks__/mock-runtime-settings.json',
   APP_SERVER_FILE_PATH: 'server',
   APP_PUBLIC_FILE_PATH: 'public',
 }));
