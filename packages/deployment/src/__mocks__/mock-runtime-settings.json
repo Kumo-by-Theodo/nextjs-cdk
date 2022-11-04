@@ -2,6 +2,11 @@
   "staticPages": { "^/(?:/)?$": "pages/index.html", "^/index2(?:/)?$": "pages/index2.html" },
   "publicFiles": ["/favicon.ico", "/images/vercel.svg"],
   "dynamicPages": {
+    "^/api/toto/([^/]+?)(?:/)?$": {
+      "routeKeys": { "id": "id" },
+      "namedRegex": "^/api/toto/(?<id>[^/]+?)(?:/)?$",
+      "prerendered": []
+    },
     "^/dyn/([^/]+?)(?:/)?$": {
       "fallback": null,
       "routeKeys": { "slug": "slug" },

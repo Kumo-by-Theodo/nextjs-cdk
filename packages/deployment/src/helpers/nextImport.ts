@@ -13,7 +13,7 @@ import {
 } from 'constants/paths';
 import { PagesManifest, PrerenderManifest, RoutesManifest } from 'types/manifests';
 
-import { getDepenciesFromHandlerPath } from './nft';
+import { getDependenciesFromHandlerPath } from './nft';
 
 const requireNextManifest = (nextRoot: string, path: NextManifestPathsType): unknown =>
   require(join(nextRoot, path));
@@ -39,14 +39,15 @@ export const requireHandlerFromPath = (nextRoot: string): PagesManifest =>
  * {
  *   "/api/hello": "pages/api/hello.js",
  *   "/api/bye": "pages/api/bye.js"
+ *   "/api/[...slug]": "pages/api/[...slug].js",
+ *   "/api/[id]": "pages/api/[id].js",
  * }
  * ```
  */
-export const getNextAPIHandlers = (nextRoot: string): PagesManifest => {
-  const pageManifest = requirePageManifest(nextRoot);
-  const APIPaths = Object.keys(pageManifest).filter(path => path.startsWith(API_PATH_PREFIX));
+export const getNextAPIHandlers = (pagesManifest: PagesManifest): PagesManifest => {
+  const APIPaths = Object.keys(pagesManifest).filter(path => path.startsWith(API_PATH_PREFIX));
 
-  return Object.fromEntries(APIPaths.map(path => [path, pageManifest[path] as string]));
+  return Object.fromEntries(APIPaths.map(path => [path, pagesManifest[path] as string]));
 };
 
 /**
@@ -54,13 +55,15 @@ export const getNextAPIHandlers = (nextRoot: string): PagesManifest => {
  * Returns a list of packages names, the version will be automatically deduced
  * by aws CDK with the Next's App root folder `package.json`
  */
-export const getNextAPITracedPackages = (nextRoot: string): string[] => {
-  const rootFolder = getNextServerFolder(nextRoot);
-  const depencies = Object.values(getNextAPIHandlers(nextRoot))
-    .map(handlerPath => getDepenciesFromHandlerPath(join(rootFolder, handlerPath)))
+export const getNextAPITracedPackages = (
+  pagesManifest: PagesManifest,
+  rootFolder: string,
+): string[] => {
+  const dependencies = Object.values(getNextAPIHandlers(pagesManifest))
+    .map(handlerPath => getDependenciesFromHandlerPath(join(rootFolder, handlerPath)))
     .flat();
 
-  return Array.from(new Set(depencies));
+  return Array.from(new Set(dependencies));
 };
 
 /**

@@ -14,3 +14,4 @@ coverage
 
 #Builds
 **/dist
+.DS_Store

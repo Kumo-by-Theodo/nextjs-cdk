@@ -9,7 +9,10 @@ import {
   getAPIHandlersFolder,
   getNextAPITracedPackages,
   getNextChunkFolder,
+  getNextServerFolder,
   getWebpackApiRuntimeFile,
+  requirePageManifest,
+  requireRoutesManifest,
 } from 'helpers/nextImport';
 import { createAPIRuntimeSettings } from 'runtimeSettings/api';
 
@@ -17,9 +20,12 @@ const API_HANDLER_NAME = 'NextJSApi';
 
 export const getApiLambda = (nextAppRoot: string, scope: Construct): NodejsFunction => {
   const apiHandlerFolder = join(__dirname, '../../handlers/api');
-  const runtimeData = createAPIRuntimeSettings(nextAppRoot);
 
-  const packages = getNextAPITracedPackages(nextAppRoot);
+  const pagesManifest = requirePageManifest(nextAppRoot);
+  const routesManifest = requireRoutesManifest(nextAppRoot);
+  const runtimeData = createAPIRuntimeSettings(pagesManifest, routesManifest);
+
+  const packages = getNextAPITracedPackages(pagesManifest, getNextServerFolder(nextAppRoot));
 
   return new NodejsFunction(scope, API_HANDLER_NAME, {
     entry: join(apiHandlerFolder, 'index.js'),

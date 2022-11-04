@@ -17,5 +17,14 @@ export type DynamicPageEntry = {
 export type PrerenderedEntry = { params: ParamsMapping; file: string };
 
 export type apiRuntimeSettings = {
-  handlersPaths: Partial<{ [pathname: string]: string }>;
+  staticApiPaths: { [pathname: string]: string };
+  dynamicApiPaths: {
+    [regexKey: string]: {
+      page: string;
+      regex: string;
+      routeKeys: RouteKeys;
+      namedRegex: string;
+      apiPath: string;
+    };
+  };
 };
